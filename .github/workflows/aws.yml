@@ -1,0 +1,23 @@
+name: Deploy to IIS server
+
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: windows-latest
+    environment: production
+
+    steps:
+    - name: Publish
+      run: dotnet publish ./MyApp/MyApp.csproj -c Release -o ./publish
+
+    - uses: ChristopheLav/iis-deploy@v1
+      with:
+        website-name: ${{ secrets.SITE_NAME }} # this is my.app
+        msdeploy-service-url: https://${{ secrets.SERVER_ADDRESS }}:8172 # this is a IP public
+        msdeploy-username: ${{ secrets.USERNAME }} 
+        msdeploy-password: ${{ secrets.PASSWORD }}
+        source-path: ./publish
