@@ -42,6 +42,7 @@ jobs:
   
       steps:
       - name: Publish
+        working-directory: WeddingApp
         run: dotnet publish -c Release -o ../publish
       - uses: ChristopheLav/iis-deploy@v1
         with:
