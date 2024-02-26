@@ -36,11 +36,11 @@ jobs:
       working-directory: TestsLibrary
 
     - name: Publish
-      run: dotnet publish $env:Project_Name -c Release -o ./publish
+      run: dotnet publish $env:Project_Name -c Release -o publish
     - uses: ChristopheLav/iis-deploy@v1
       with:
         website-name: 'MyWebsite'
         msdeploy-service-url: ${{ secrets.SERVER_ADDRESS }}
         msdeploy-username: ${{ secrets.USERNAME }}
         msdeploy-password: ${{ secrets.PASSWORD }}
-        source-path: ${{ github.workspace }}\publish
+        source-path: publish
