@@ -42,5 +42,5 @@ jobs:
         website-name: 'WeddingApp'
         msdeploy-service-url: '192.1.1.1'
         msdeploy-username: '${{ secrets.USERNAME }}'
-        msdeploy-password: 'pasword123'
+        msdeploy-password: '${{ secrets.PASSWORD }}'
         source-path: '${{ github.workspace }}'
