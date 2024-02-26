@@ -14,6 +14,7 @@ jobs:
     runs-on: windows-latest
     env:
       Solution_Name: WeddingApp/WeddingApp.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
+      Project_Name: WeddingApp/WeddingApp.csproj
       Test_Project_Path: TestsLibrary.Tests/TestsLibrary.Tests.csproj                 # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj.
     steps:
     - name: Checkout
@@ -35,7 +36,7 @@ jobs:
       working-directory: TestsLibrary
 
     - name: Publish
-      run: dotnet publish -c Release -o ./publish
+      run: dotnet publish $env:Project_Name -c Release -o ./publish
     - uses: ChristopheLav/iis-deploy@v1
       with:
         website-name: ${{ secrets.SITE_NAME }} # this is my.app
