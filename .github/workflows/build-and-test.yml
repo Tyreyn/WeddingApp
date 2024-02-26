@@ -33,16 +33,17 @@ jobs:
     - name: Execute unit tests
       run: dotnet test
       working-directory: TestsLibrary
-      
+
   deploy:
       name: Deploy
       runs-on: windows-latest
-      environment: production
+      needs: [build]
+      environment: env
   
       steps:
       - name: Publish
         run: dotnet publish WeddingApp/WeddingApp.csproj -c Release -o publish
-  
+          echo 'deploying to server'
       - uses: ChristopheLav/iis-deploy@v1
         with:
           website-name: ${{ secrets.SITE_NAME }} # this is my.app
