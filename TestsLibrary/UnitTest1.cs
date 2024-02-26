@@ -5,7 +5,7 @@ namespace TestsLibrary
         [Fact]
         public void AlwaysTrue()
         {
-
+            Assert.True(true);
         }
     }
 }
