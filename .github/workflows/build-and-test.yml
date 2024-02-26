@@ -10,7 +10,7 @@ jobs:
   build:
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Debug]
     runs-on: windows-latest
     env:
       Solution_Name: WeddingApp/WeddingApp.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
@@ -43,7 +43,6 @@ jobs:
       steps:
       - name: Publish
         run: dotnet publish WeddingApp/WeddingApp.csproj -c Release -o publish
-          echo 'deploying to server'
       - uses: ChristopheLav/iis-deploy@v1
         with:
           website-name: ${{ secrets.SITE_NAME }} # this is my.app
