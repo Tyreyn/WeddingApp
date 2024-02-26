@@ -39,8 +39,8 @@ jobs:
       run: dotnet publish $env:Project_Name -c Release -o ./publish
     - uses: ChristopheLav/iis-deploy@v1
       with:
-        website-name: 'WeddingApp)'
-        msdeploy-service-url: https://${{ secrets.SERVER_ADDRESS }}:8172 # this is a IP public
-        msdeploy-username: ${{ secrets.USERNAME }} 
+        website-name: 'MyWebsite'
+        msdeploy-service-url: ${{ secrets.SERVER_ADDRESS }}
+        msdeploy-username: ${{ secrets.USERNAME }}
         msdeploy-password: ${{ secrets.PASSWORD }}
-        source-path: ./publish
+        source-path: ${{ github.workspace }}\publish
