@@ -40,7 +40,7 @@ jobs:
     - uses: ChristopheLav/iis-deploy@v1
       with:
         website-name: 'MyWebsite'
-        msdeploy-service-url: ${{ secrets.SERVER_ADDRESS }}
-        msdeploy-username: ${{ secrets.USERNAME }}
-        msdeploy-password: ${{ secrets.PASSWORD }}
+        msdeploy-service-url: '${{ secrets.SERVER_ADDRESS }}'
+        msdeploy-username: '${{ secrets.USERNAME }}'
+        msdeploy-password: '${{ secrets.PASSWORD }}'
         source-path: publish
