@@ -132,3 +132,4 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+/WeddingApp/Properties/PublishProfiles/IISProfile1.pubxml
