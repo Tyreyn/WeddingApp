@@ -34,20 +34,12 @@ jobs:
       run: dotnet test
       working-directory: TestsLibrary
 
-  deploy:
-      name: Deploy
-      runs-on: windows-latest
-      needs: [build]
-      environment: env
-  
-      steps:
-      - name: Publish
-        working-directory: WeddingApp
-        run: dotnet publish -c Release -o ../publish
-      - uses: ChristopheLav/iis-deploy@v1
-        with:
-          website-name: ${{ secrets.SITE_NAME }} # this is my.app
-          msdeploy-service-url: https://${{ secrets.SERVER_ADDRESS }}:8172 # this is a IP public
-          msdeploy-username: ${{ secrets.USERNAME }} 
-          msdeploy-password: ${{ secrets.PASSWORD }}
-          source-path: ../publish
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish
+    - uses: ChristopheLav/iis-deploy@v1
+      with:
+        website-name: ${{ secrets.SITE_NAME }} # this is my.app
+        msdeploy-service-url: https://${{ secrets.SERVER_ADDRESS }}:8172 # this is a IP public
+        msdeploy-username: ${{ secrets.USERNAME }} 
+        msdeploy-password: ${{ secrets.PASSWORD }}
+        source-path: ./publish
