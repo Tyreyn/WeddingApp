@@ -36,13 +36,11 @@ jobs:
     #  working-directory: TestsLibrary
 
     - name: Publish
-      #run: dotnet publish $env:Project_Name -c Release -o ${{ github.workspace }}/publish
-      run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
-
-    #- uses: ChristopheLav/iis-deploy@v1
-    #  with:
-    #    website-name: 'weddingApp'
-    #    msdeploy-service-url: '${{ secrets.SERVER_ADDRESS }}'
-    #    msdeploy-username: '${{ secrets.USERNAME }}'
-    #    msdeploy-password: '${{ secrets.PASSWORD }}'
-    #    source-path: '${{ github.workspace }}\publish'
+      run: dotnet publish $env:Project_Name -c Release -o ${{ github.workspace }}/publish
+    - uses: ChristopheLav/iis-deploy@v1
+      with:
+        website-name: 'weddingapp'
+        msdeploy-service-url: '${{ secrets.SERVER_ADDRESS }}'
+        msdeploy-username: '${{ secrets.USERNAME }}'
+        msdeploy-password: '${{ secrets.PASSWORD }}'
+        source-path: '${{ github.workspace }}\publish'
