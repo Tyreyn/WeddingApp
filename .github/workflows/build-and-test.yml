@@ -1,4 +1,4 @@
-name: Build and test
+nganame: Build and test
 
 on:
   push:
@@ -39,8 +39,8 @@ jobs:
       run: dotnet publish $env:Project_Name -c Release -o publish
     - uses: ChristopheLav/iis-deploy@v1
       with:
-        website-name: 'CapturaXML2'
+        website-name: 'WeddingApp'
         msdeploy-service-url: '192.1.1.1'
-        msdeploy-username: 'publish'
+        msdeploy-username: '${{ secrets.USERNAME }}'
         msdeploy-password: 'pasword123'
         source-path: '${{ github.workspace }}'
