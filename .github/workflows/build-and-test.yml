@@ -37,7 +37,7 @@ jobs:
 
     - name: Publish
       #run: dotnet publish $env:Project_Name -c Release -o ${{ github.workspace }}/publish
-      run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=IISProfile1 /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
+      run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
 
     #- uses: ChristopheLav/iis-deploy@v1
     #  with:
