@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Publish
-      run: dotnet publish ./WeddingApp/WeddingApp.csproj -c Release -o ./publish
+      run: dotnet publish WeddingApp/WeddingApp.csproj -c Release -o publish
 
     - uses: ChristopheLav/iis-deploy@v1
       with:
@@ -20,4 +20,4 @@ jobs:
         msdeploy-service-url: https://${{ secrets.SERVER_ADDRESS }}:8172 # this is a IP public
         msdeploy-username: ${{ secrets.USERNAME }} 
         msdeploy-password: ${{ secrets.PASSWORD }}
-        source-path: ./publish
+        source-path: publish
