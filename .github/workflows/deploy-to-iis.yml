@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Publish
-      run: dotnet publish ./MyApp/MyApp.csproj -c Release -o ./publish
+      run: dotnet publish ./WeddingApp/WeddingApp.csproj -c Release -o ./publish
 
     - uses: ChristopheLav/iis-deploy@v1
       with:
