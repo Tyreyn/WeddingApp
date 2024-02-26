@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeddingApp", "WeddingApp.csproj", "{24CD7B21-1105-477C-AC2D-0B5F555FF69B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeddingApp", "WeddingApp.csproj", "{24CD7B21-1105-477C-AC2D-0B5F555FF69B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLibrary", "..\TestsLibrary\TestsLibrary.csproj", "{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{24CD7B21-1105-477C-AC2D-0B5F555FF69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24CD7B21-1105-477C-AC2D-0B5F555FF69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24CD7B21-1105-477C-AC2D-0B5F555FF69B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
