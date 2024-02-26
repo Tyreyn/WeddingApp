@@ -39,8 +39,8 @@ jobs:
       run: dotnet publish $env:Project_Name -c Release -o publish
     - uses: ChristopheLav/iis-deploy@v1
       with:
-        website-name: 'MyWebsite'
-        msdeploy-service-url: '${{ secrets.SERVER_ADDRESS }}'
-        msdeploy-username: '${{ secrets.USERNAME }}'
-        msdeploy-password: '${{ secrets.PASSWORD }}'
-        source-path: 'publish'
+        website-name: 'CapturaXML2'
+        msdeploy-service-url: '192.1.1.1'
+        msdeploy-username: 'publish'
+        msdeploy-password: 'pasword123'
+        source-path: '${{ github.workspace }}'
