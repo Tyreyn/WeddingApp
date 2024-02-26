@@ -43,4 +43,4 @@ jobs:
         msdeploy-service-url: '${{ secrets.SERVER_ADDRESS }}'
         msdeploy-username: '${{ secrets.USERNAME }}'
         msdeploy-password: '${{ secrets.PASSWORD }}'
-        source-path: '${{ github.workspace }}/publish'
+        source-path: '${{ github.workspace }}\publish'
