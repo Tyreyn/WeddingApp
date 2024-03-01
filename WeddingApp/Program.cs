@@ -2,8 +2,14 @@ using WeddingApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add secrets variables
+//var connectionStrings = builder.Configuration.GetSection("SQL");
+
+builder.Configuration.AddUserSecrets("ConnectionStringClass");
+
 // Add services to the container.
-builder.Services.AddRazorComponents()
+builder.Services
+    .AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();

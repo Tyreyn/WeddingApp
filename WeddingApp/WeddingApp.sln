@@ -5,7 +5,12 @@ VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeddingApp", "WeddingApp.csproj", "{24CD7B21-1105-477C-AC2D-0B5F555FF69B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLibrary", "..\TestsLibrary\TestsLibrary.csproj", "{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsLibrary", "..\TestsLibrary\TestsLibrary.csproj", "{FAD60BA3-F64E-4660-B288-41F38F7B0CF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0267CD81-C96A-4D80-94C0-FCB3A53F037E}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
