@@ -32,6 +32,8 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
     - name: Execute unit tests
+      env:
+        ConnectionStringClass:mainpc : ${{ secrets.MAINPC }}
       run: dotnet test
       working-directory: TestsLibrary
 
