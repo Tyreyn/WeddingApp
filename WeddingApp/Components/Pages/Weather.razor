@@ -1,11 +1,16 @@
 ﻿@page "/weather"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [StreamRendering]
 
-<PageTitle>Weather</PageTitle>
-
-<h1>Weather</h1>
-
-<p>This component demonstrates showing data.</p>
+<AuthorizeView>
+    <Authorized>
+        <p>Hello, @authMessage</p>
+    </Authorized>
+    <NotAuthorized>
+        <p>You're not authorized.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @if (forecasts == null)
 {
@@ -37,21 +42,37 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
     private WeatherForecast[]? forecasts;
+    private string authMessage = "The user is NOT authenticated.";
+
 
     protected override async Task OnInitializedAsync()
     {
+        if (authenticationState is not null)
+        {
+            // var authState = await authenticationState;
+            // var user = authState?.User;
+
+            // if (user?.Identity is not null && user.Identity.IsAuthenticated)
+            // {
+            //     authMessage = $"{user.Identity.Name} is authenticated.";
+            // }
+        }
+
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);
         var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
         forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+            {
+                Date = startDate.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = summaries[Random.Shared.Next(summaries.Length)]
+            }).ToArray();
     }
 
     private class WeatherForecast

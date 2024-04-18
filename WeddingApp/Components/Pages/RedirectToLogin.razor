@@ -1,0 +1,12 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@using WeddingApp.Controllers
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnAfterRender(bool firstRender)
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}
