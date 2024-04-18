@@ -1,9 +1,13 @@
 ﻿namespace WeddingApp.Context
 {
+    using Dapper;
     #region Usings
 
     using Microsoft.Data.SqlClient;
     using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using System.Data;
+    using WeddingApp.Entities;
 
     #endregion
 
@@ -37,7 +41,7 @@
         public SqlServerDataAccess(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.CheckConnectionStatus();
+            this.CheckConnectionStatusAndSetProperConnectionString();
         }
 
         #endregion
@@ -50,7 +54,7 @@
         /// <returns>
         /// True, if connection can be established.
         /// </returns>
-        public Task<bool> CheckConnectionStatus()
+        public async Task<bool> CheckConnectionStatusAndSetProperConnectionString()
         {
             var connectionstrings = this.configuration.GetSection("ConnectionStringClass").GetChildren();
 
@@ -63,7 +67,8 @@
                         myConn.Open();
                         Console.WriteLine($"{connectionstring.Key} connection can be established");
                         properConnectionString = connectionstring.Value;
-                        return Task.FromResult(true);
+                        myConn.Close();
+                        return true;
                     }
                 }
                 catch (Exception ex)
@@ -73,7 +78,32 @@
             }
 
             Console.WriteLine("There is no available SQL Server");
-            return Task.FromResult(false);
+            return false;
+        }
+
+        public async Task<List<T>> ExecuteStoredProcedures<T>(string storedProceduresName, DynamicParameters? dynamicParameters = null)
+        {
+            List<T> list = new List<T>();
+            if (this.properConnectionString != null)
+            {
+                try
+                {
+                    using (SqlConnection myConn = new SqlConnection(this.properConnectionString))
+                    {
+                        list = myConn.QueryAsync<T>(
+                            sql: storedProceduresName,
+                            param: dynamicParameters,
+                            commandType: CommandType.StoredProcedure).Result.ToList();
+                        return list;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.ToString());
+                }
+            }
+
+            return list;
         }
 
         #endregion
