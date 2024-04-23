@@ -2,7 +2,6 @@
 {
     using Dapper;
     #region Usings
-
     using Microsoft.Data.SqlClient;
     using Newtonsoft.Json;
     using System.Collections.Generic;

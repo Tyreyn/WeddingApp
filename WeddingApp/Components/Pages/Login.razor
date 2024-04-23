@@ -1,22 +1,7 @@
-﻿@page "/login"
-
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-@using WeddingApp.Controllers
-@using WeddingApp.Entities
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@attribute [AllowAnonymous]
-
+﻿@using WeddingApp.Entities
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
-        @if (LoginMessage != null)
-        {
-            @if (LoginMessage.Item1)
-            {
-                @LoginMessage.Item2
-            }
-        }
-        <EditForm Model="@userEntityModel" OnValidSubmit="SignIn" FormName="LoginForm">
+        <EditForm Model="@userEntityModel" OnValidSubmit="@(() => SignIn.InvokeAsync(userEntityModel))" FormName="LoginForm" Context="formContext">
             <DataAnnotationsValidator />
             <div class="mb-3">
                 <label>Imię</label>
@@ -24,8 +9,10 @@
                 <ValidationMessage For="() => userEntityModel.UserName" />
             </div>
             <div class="mb-3">
-                <label>Numer telefonu - jeśli nie chcesz podać swojego numeru, wpisz losową liczbę
-                    (zapamiętaj ją, aby później móc usuwać wcześniej dodane zdjęcia)</label>
+                <label>
+                    Numer telefonu - jeśli nie chcesz podać swojego numeru, wpisz losową liczbę
+                    (zapamiętaj ją, aby później móc usuwać wcześniej dodane zdjęcia)
+                </label>
                 <InputText @bind-Value="userEntityModel.UserPhone" class="form-control" placeholder="Numer telefonu" />
                 <ValidationMessage For="() => userEntityModel.UserPhone" />
             </div>
@@ -36,32 +23,11 @@
     </div>
 </div>
 
-
-<AuthorizeView>
-    <Authorized>
-        <p>Hello, @context.User.Identity?.Name!</p>
-    </Authorized>
-    <NotAuthorized>
-        <p>You're not authorized.</p>
-    </NotAuthorized>
-</AuthorizeView>
-
 @code {
 
     [SupplyParameterFromForm]
     public UserEntity userEntityModel { get; set; } = new UserEntity();
 
-    private Tuple<bool, string> LoginMessage;
-
-    protected override Task OnInitializedAsync()
-    {
-        return base.OnInitializedAsync();
-
-    }
-
-    private async void SignIn()
-    {
-        LoginMessage = ((CustomAuthStateProviderController)AuthenticationStateProvider)
-            .AuthenticateUser(userEntityModel.UserName, userEntityModel.UserPhone).Result;
-    }
+    [Parameter]
+    public EventCallback<UserEntity> SignIn{ get; set; }
 }

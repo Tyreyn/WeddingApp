@@ -1,0 +1,71 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@using WeddingApp.Controllers
+@using WeddingApp.Entities
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@attribute [AllowAnonymous]
+@rendermode @(new InteractiveServerRenderMode(false))
+
+<h3>User name: @userName User phone: @userPhoneNumber</h3>
+
+@if (userName == null)
+{
+    <p>Wczytywanie danych</p>
+}
+else
+{
+    @if (userName == string.Empty)
+    {
+        <Login SignIn="@SignIn"/>
+        <p>NOT HELLO, @userName!</p>
+    }
+    else
+    {
+        <Gallery />
+    }
+}
+
+
+@code {
+
+    public string? userName;
+    public string? userPhoneNumber;
+    private Tuple<bool, string> LoginMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStateAsync();
+        //StateHasChanged();
+    }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (userName == null)
+        {
+            userName = string.Empty;
+            StateHasChanged();
+        }
+        return Task.FromResult(true);
+    }
+
+    private async Task LoadStateAsync()
+    {
+        ClaimsPrincipal currentUser = await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
+        await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
+        userName = await localStorage.GetItemAsync<string>("AuthTokenName");
+        userPhoneNumber = await localStorage.GetItemAsync<string>("AuthTokenPhoneNumber");
+    }
+
+    private async void SignIn(UserEntity userEntityModel)
+    {
+        LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)
+            .AuthenticateUser(userEntityModel.UserName, userEntityModel.UserPhone);
+        userName = userEntityModel.UserName;
+        userPhoneNumber = userEntityModel.UserPhone;
+        StateHasChanged();
+    }
+}
