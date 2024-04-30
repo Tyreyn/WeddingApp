@@ -1,6 +1,10 @@
 ﻿@using WeddingApp.Entities
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        @if(LoginMessage != null)
+        {
+            <div><h3>@LoginMessage.Item2</h3></div>
+        }
         <EditForm Model="@userEntityModel" OnValidSubmit="@(() => SignIn.InvokeAsync(userEntityModel))" FormName="LoginForm" Context="formContext">
             <DataAnnotationsValidator />
             <div class="mb-3">
@@ -29,5 +33,8 @@
     public UserEntity userEntityModel { get; set; } = new UserEntity();
 
     [Parameter]
-    public EventCallback<UserEntity> SignIn{ get; set; }
+    public EventCallback<UserEntity> SignIn { get; set; }
+
+    [Parameter]
+    public Tuple<bool, string> LoginMessage { get; set; }
 }

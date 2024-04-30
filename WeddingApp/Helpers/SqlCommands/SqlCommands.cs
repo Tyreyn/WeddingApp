@@ -50,5 +50,21 @@
         /// Parameters: (@Name = user name).
         /// </summary>
         public static readonly string SelectUserByName = "WeddingDB.dbo.SELECT_USER_BY_Name";
+
+        /// <summary>
+        /// Add new picture procedure name.
+        /// Parameters: (@Path = path to picture, @ID = user ID).
+        /// </summary>
+        public static readonly string AddNewImage = "WeddingDB.dbo.ADD_NEW_IMAGE";
+
+        /// <summary>
+        /// Get all added pictures procedure name.
+        /// </summary>
+        public static readonly string GetAllPictures = "WeddingDB.dbo.SHOW_ALL_PICTURES";
+
+        /// <summary>
+        /// Delete picture by path procedure name.
+        /// </summary>
+        public static readonly string DeletePictureByPath = "WeddingDB.dbo.DELETE_PICTURE_BY_PATH";
     }
 }

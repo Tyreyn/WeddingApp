@@ -1,24 +1,19 @@
-﻿using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-
-namespace WeddingApp.Controllers
+﻿namespace WeddingApp.Controllers
 {
+    using System.Security.Claims;
+    using WeddingApp.Entities;
+
     public class CustomAuthState
     {
-        public ILocalStorageService LocalStorageService;
+        /// <summary>
+        /// Gets or sets current user claims.
+        /// </summary>
+        public ClaimsPrincipal CurrentUserClaims { get; set; } = new ClaimsPrincipal();
 
-        public ClaimsPrincipal currentUser { get; set; } = new ClaimsPrincipal();
-
-        public async Task SetCurrentUser(ClaimsPrincipal currentUser)
-        {
-            this.currentUser = currentUser;
-        }
-
-        public async Task<ClaimsPrincipal> GetCurrentUser()
-        {
-            return this.currentUser;
-        }
+        /// <summary>
+        /// Gets or sets current user entity.
+        /// </summary>
+        public UserEntity CurrentUserEntity { get; set; } = new UserEntity();
 
     }
 }

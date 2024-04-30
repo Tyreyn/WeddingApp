@@ -1,0 +1,10 @@
+﻿@using WeddingApp.Entities
+
+<div>
+    <img src="@pictureEntity.PicturePath" />
+</div>
+
+@code {
+    [Parameter]
+    public PictureEntity pictureEntity { get; set; }
+}

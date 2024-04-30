@@ -5,23 +5,24 @@
 @using System.Security.Claims
 @using WeddingApp.Controllers
 @using WeddingApp.Entities
+@inject CustomAuthState CustomAuthState
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @attribute [AllowAnonymous]
 @rendermode @(new InteractiveServerRenderMode(false))
 
-<h3>User name: @userName User phone: @userPhoneNumber</h3>
+<h3>User name: @CustomAuthState.CurrentUserEntity.UserName User phone: @CustomAuthState.CurrentUserEntity.UserPhone</h3>
 
-@if (userName == null)
+@if (CustomAuthState.CurrentUserEntity.UserName == null)
 {
     <p>Wczytywanie danych</p>
 }
 else
 {
-    @if (userName == string.Empty)
+    @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
     {
-        <Login SignIn="@SignIn"/>
-        <p>NOT HELLO, @userName!</p>
+        <Login SignIn="@SignIn" LoginMessage="@LoginMessage" />
+        <p>NOT HELLO, @CustomAuthState.CurrentUserEntity.UserName!</p>
     }
     else
     {
@@ -31,9 +32,6 @@ else
 
 
 @code {
-
-    public string? userName;
-    public string? userPhoneNumber;
     private Tuple<bool, string> LoginMessage;
 
     protected override async Task OnInitializedAsync()
@@ -44,9 +42,9 @@ else
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        if (userName == null)
+        if (CustomAuthState.CurrentUserEntity.UserName == null)
         {
-            userName = string.Empty;
+            CustomAuthState.CurrentUserEntity.UserName = string.Empty;
             StateHasChanged();
         }
         return Task.FromResult(true);
@@ -54,18 +52,14 @@ else
 
     private async Task LoadStateAsync()
     {
-        ClaimsPrincipal currentUser = await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
+        await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
-        userName = await localStorage.GetItemAsync<string>("AuthTokenName");
-        userPhoneNumber = await localStorage.GetItemAsync<string>("AuthTokenPhoneNumber");
     }
 
     private async void SignIn(UserEntity userEntityModel)
     {
         LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)
             .AuthenticateUser(userEntityModel.UserName, userEntityModel.UserPhone);
-        userName = userEntityModel.UserName;
-        userPhoneNumber = userEntityModel.UserPhone;
         StateHasChanged();
     }
 }

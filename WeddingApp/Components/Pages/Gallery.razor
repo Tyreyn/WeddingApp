@@ -1,5 +1,75 @@
-﻿<h3>Gallery</h3>
+﻿@using Microsoft.Extensions.Logging
+@inject IWebHostEnvironment Environment
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using WeddingApp.Components.Elements
+@using WeddingApp.Controllers
+@using WeddingApp.Entities
+@inject IHttpClientFactory ClientFactory
+@inject FilesController FilesController
+@inject CustomAuthState CustomAuthState
+
+<h3>Gallery</h3>
+<h3>@CustomAuthState.CurrentUserEntity.UserID</h3>
+<InputFile accept="image/*" capture="user" OnChange="OnInputFileChange">Zdjęcie</InputFile>
+<InputFile id="imageFile" accept="image/*" OnChange="OnInputFileChange">Galeria</InputFile>
+
+@if (isLoading)
+{
+    <p>Progress: @string.Format("{0:P0}", progressPercent)</p>
+}
+else
+{
+    <ul>
+        @foreach (PictureEntity picture in pictures)
+        {
+            <li>
+                <ul>
+                    <Picture pictureEntity="picture" />
+                </ul>
+            </li>
+        }
+
+    </ul>
+}
+
 
 @code {
+    public List<PictureEntity> pictures = new();
 
+    private bool isLoading;
+    private bool shouldRender;
+    public int readbytes;
+    private decimal progressPercent;
+    public string uploadDirectory;
+    public string statusMessage;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            pictures = FilesController.LoadFiles().Result;
+            StateHasChanged();
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs inputFileChangeEventArgs)
+    {
+        isLoading = true;
+        FilesController.OnStateChange += UploadingPictureProgress;
+        await FilesController.UploadFiles(
+            inputFileChangeEventArgs,
+            CustomAuthState.CurrentUserEntity.UserID);
+        FilesController.OnStateChange -= UploadingPictureProgress;
+        isLoading = false;
+        pictures = FilesController.LoadFiles().Result;
+        StateHasChanged();
+    }
+
+    private async void UploadingPictureProgress(decimal progressPercent)
+    {
+        this.progressPercent = progressPercent;
+        await InvokeAsync(() => StateHasChanged());
+    }
 }

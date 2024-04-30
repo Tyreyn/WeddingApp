@@ -1,12 +1,12 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.FileProviders;
 using WeddingApp.Components;
 using WeddingApp.Context;
 using WeddingApp.Controllers;
 using WeddingApp.Entities;
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Configuration.AddUserSecrets("ConnectionStringClass");
 
@@ -14,14 +14,15 @@ builder.Configuration.AddUserSecrets("ConnectionStringClass");
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddSingleton<CustomAuthState>();
 builder.Services.AddSingleton<SqlServerDataAccess>();
 builder.Services.AddSingleton<SqlServerDataController>();
+builder.Services.AddSingleton<FilesController>();
+builder.Services.AddSingleton<UserEntity>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProviderController>();
-builder.Services.AddScoped<UserEntity>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
         {
@@ -51,7 +52,12 @@ app.UseRouting();
 app.UseAntiforgery();
 app.UseAuthorization();
 //app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+                   Path.Combine(builder.Environment.ContentRootPath, "wwwroot")),
+    RequestPath = "/wwwroot"
+});
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 app.Run();

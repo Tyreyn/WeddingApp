@@ -43,26 +43,41 @@
             string userName = userFromCookies.Claims.First(
                 claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
 
-            List<UserEntity> userFromDatabase =
-                this.SqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(
-                    SqlCommands.SelectUserByPhoneNumber,
-                    new DynamicParameters(
-                        new
-                        {
-                            Phone = userPhone,
-                        })).Result;
+            UserEntity userFromDatabase = this.GetUserEntity(userPhone).Result;
 
-            if (userFromDatabase.Count() == 0)
+            if (userFromDatabase.UserName == string.Empty)
             {
                 return Task.FromResult(new Tuple<bool, string>(
                     false,
                     "User does not exists in database"));
             }
 
-            string message = this.CheckIfDataIsCorrect(userFromDatabase[0], userPhone, userName).Result;
-            return Task.FromResult(new Tuple<bool,string>(
+            string message = this.CheckIfDataIsCorrect(userFromDatabase, userPhone, userName).Result;
+            return Task.FromResult(new Tuple<bool, string>(
                 true,
                 message));
+        }
+
+        /// <summary>
+        /// Get user entity from database.
+        /// </summary>
+        /// <param name="userPhoneNumber">
+        /// User phone number to get.
+        /// </param>
+        /// <returns>
+        /// User Entity.
+        /// </returns>
+        public async Task<UserEntity> GetUserEntity(string userPhoneNumber)
+        {
+            List<UserEntity> userFromDatabase =
+                this.SqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(
+                    SqlCommands.SelectUserByPhoneNumber,
+                    new DynamicParameters(
+                        new
+                        {
+                            Phone = userPhoneNumber,
+                        })).Result;
+            return userFromDatabase.Count > 0 ? userFromDatabase[0] : new UserEntity();
         }
 
         /// <summary>
@@ -99,6 +114,69 @@
             }
         }
 
+        /// <summary>
+        /// Add new picture entity to database.
+        /// </summary>
+        /// <param name="userID">
+        /// ID of user who is adding new picture.
+        /// </param>
+        /// <param name="picturePath">
+        /// Path to new picture.
+        /// </param>
+        /// <returns>
+        /// True, if added correctly.
+        /// </returns>
+        public Task<bool> AddPictureToDatabase(int userID, string picturePath)
+        {
+            Console.WriteLine("Starting adding picture to database");
+            bool result = this.SqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(
+                SqlCommands.AddNewImage,
+                new DynamicParameters(
+                    new
+                    {
+                        Path = picturePath,
+                        ID = userID,
+                    })).IsCompletedSuccessfully;
+
+            if (result)
+            {
+                Console.WriteLine($"User: {userID} added successfully picture {picturePath} to database");
+                return Task.FromResult(true);
+            }
+            else
+            {
+                Console.WriteLine($"There is problem with adding {picturePath}");
+                return Task.FromResult(false);
+            }
+        }
+
+        /// <summary>
+        /// Get all pictures entities from database.
+        /// </summary>
+        /// <returns>
+        /// List of picture entities.
+        /// </returns>
+        public Task<List<PictureEntity>> GetAllPictures()
+        {
+            List<PictureEntity> pictureEntities = this.SqlServerDataAccess.ExecuteStoredProcedures<PictureEntity>(SqlCommands.GetAllPictures).Result;
+            return Task.FromResult(pictureEntities);
+        }
+
+        /// <summary>
+        /// Check if data is correct.
+        /// </summary>
+        /// <param name="userToCheck">
+        /// User entity from database to check.
+        /// </param>
+        /// <param name="userPhone">
+        /// Current user phone.
+        /// </param>
+        /// <param name="userName">
+        /// Current user name.
+        /// </param>
+        /// <returns>
+        /// Empty string if everything is alright, otherwise contains information about problem.
+        /// </returns>
         private Task<string> CheckIfDataIsCorrect(UserEntity userToCheck, string userPhone, string userName)
         {
             string message = string.Empty;

@@ -80,6 +80,24 @@
             return false;
         }
 
+        /// <summary>
+        /// Execute stored procedures
+        /// </summary>
+        /// <typeparam name="T">
+        /// Entity to get from database.
+        /// </typeparam>
+        /// <param name="storedProceduresName">
+        /// Stored procedure command name.
+        /// </param>
+        /// <param name="dynamicParameters">
+        /// Parameters to execute stored procedure.
+        /// </param>
+        /// <returns>
+        /// List of entity.
+        /// </returns>
+        /// <exception cref="Exception">
+        /// Throws if something wrong went in execute.
+        /// </exception>
         public async Task<List<T>> ExecuteStoredProcedures<T>(string storedProceduresName, DynamicParameters? dynamicParameters = null)
         {
             List<T> list = new List<T>();
