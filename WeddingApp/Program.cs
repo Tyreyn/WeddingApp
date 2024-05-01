@@ -6,6 +6,7 @@ using WeddingApp.Components;
 using WeddingApp.Context;
 using WeddingApp.Controllers;
 using WeddingApp.Entities;
+using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddUserSecrets("ConnectionStringClass");
@@ -14,6 +15,7 @@ builder.Configuration.AddUserSecrets("ConnectionStringClass");
 builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddMudServices();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
@@ -52,6 +54,7 @@ app.UseRouting();
 app.UseAntiforgery();
 app.UseAuthorization();
 //app.UseHttpsRedirection();
+//app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(

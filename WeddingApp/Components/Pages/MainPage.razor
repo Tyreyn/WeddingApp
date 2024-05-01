@@ -7,6 +7,7 @@
 @using WeddingApp.Entities
 @inject CustomAuthState CustomAuthState
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SqlServerDataController SqlServerDataController
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @attribute [AllowAnonymous]
 @rendermode @(new InteractiveServerRenderMode(false))
@@ -33,11 +34,11 @@ else
 
 @code {
     private Tuple<bool, string> LoginMessage;
-
+    public bool connection;
     protected override async Task OnInitializedAsync()
     {
         await LoadStateAsync();
-        //StateHasChanged();
+        StateHasChanged();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -52,6 +53,8 @@ else
 
     private async Task LoadStateAsync()
     {
+        CustomAuthState.CurrentUserClaims = new ClaimsPrincipal();
+        CustomAuthState.CurrentUserEntity = new UserEntity();
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
     }
