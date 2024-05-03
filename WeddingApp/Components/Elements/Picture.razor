@@ -1,10 +1,25 @@
-﻿@using WeddingApp.Entities
+﻿@using WeddingApp.Controllers
+@using WeddingApp.Entities
+@inject SqlServerDataController SqlServerDataController
 
-<div>
-    <img src="@pictureEntity.PicturePath" />
-</div>
+
+<MudPaper Class="d-flex align-center">
+    <MudStack Spacing=0>
+        <MudImage Src="@this.pictureEntity.PicturePath" Width="400" Height="400" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" />
+        @if (this.pictureEntity.UserID == this.CurrentUserID)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(()=>DeletePicture.InvokeAsync(this.pictureEntity.PicturePath))"/>
+        }
+    </MudStack>
+</MudPaper>
 
 @code {
     [Parameter]
     public PictureEntity pictureEntity { get; set; }
+
+    [Parameter]
+    public int CurrentUserID { get; set; }
+
+    [Parameter]
+    public EventCallback<string> DeletePicture { get; set; }
 }

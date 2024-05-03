@@ -12,26 +12,39 @@
 @attribute [AllowAnonymous]
 @rendermode @(new InteractiveServerRenderMode(false))
 
-<h3>User name: @CustomAuthState.CurrentUserEntity.UserName User phone: @CustomAuthState.CurrentUserEntity.UserPhone</h3>
-
-@if (CustomAuthState.CurrentUserEntity.UserName == null)
-{
-    <p>Wczytywanie danych</p>
-}
-else
-{
-    @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
+<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+    @if (CustomAuthState.CurrentUserEntity.UserName == null)
     {
-        <Login SignIn="@SignIn" LoginMessage="@LoginMessage" />
-        <p>NOT HELLO, @CustomAuthState.CurrentUserEntity.UserName!</p>
+        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
     }
     else
     {
-        <Gallery />
+        @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
+        {
+            //<MudPaper Outlined="false" Class="centered-paper ma-48">
+            <MudStack Wrap="Wrap.Wrap" Spacing="12" Justify="Justify.Center" AlignItems="AlignItems.Center" Style="padding-top: 10%;">
+                <Login SignIn="@SignIn" LoginMessage="@LoginMessage" />
+            </MudStack>
+            //</MudPaper>
+        }
+        else
+        {
+            <MudPaper>
+                <Gallery />
+            </MudPaper>
+        }
     }
-}
+</MudContainer>
 
-
+<style>
+    .centered-paper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+</style>
 @code {
     private Tuple<bool, string> LoginMessage;
     public bool connection;

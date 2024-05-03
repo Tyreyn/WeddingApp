@@ -1,33 +1,37 @@
 ﻿@using WeddingApp.Entities
-<MudButton Variant="Variant.Filled" Color="Color.Primary">ButtonText</MudButton>
 
-<div class="row">
-    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
-        @if(LoginMessage != null)
+
+<EditForm Model="@userEntityModel" OnValidSubmit="@(() => SignIn.InvokeAsync(userEntityModel))" FormName="LoginForm" Context="formContext">
+    <DataAnnotationsValidator />
+    <MudGrid Justify="Justify.Center">
+        @if (LoginMessage != null)
         {
-            <div><h3>@LoginMessage.Item2</h3></div>
+            <MudItem>
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                    <MudText Color="Color.Error">@LoginMessage.Item2</MudText>
+                    </MudPaper>
+                </MudItem>
         }
-        <EditForm Model="@userEntityModel" OnValidSubmit="@(() => SignIn.InvokeAsync(userEntityModel))" FormName="LoginForm" Context="formContext">
-            <DataAnnotationsValidator />
-            <div class="mb-3">
-                <label>Imię</label>
-                <InputText @bind-Value="userEntityModel.UserName" class="form-control" placeholder="Imię" />
-                <ValidationMessage For="() => userEntityModel.UserName" />
-            </div>
-            <div class="mb-3">
-                <label>
-                    Numer telefonu - jeśli nie chcesz podać swojego numeru, wpisz losową liczbę
-                    (zapamiętaj ją, aby później móc usuwać wcześniej dodane zdjęcia)
-                </label>
-                <InputText @bind-Value="userEntityModel.UserPhone" class="form-control" placeholder="Numer telefonu" />
-                <ValidationMessage For="() => userEntityModel.UserPhone" />
-            </div>
-            <div class="mb-3 d-grid gap-2">
-                <button type="submit" class="btn btn-primary">Zaloguj</button>
-            </div>
-        </EditForm>
-    </div>
-</div>
+        <MudItem Style="display:flex;">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Imię"
+                                  @bind-Value="userEntityModel.UserName" For="@(() => userEntityModel.UserName)" OnlyValidateIfDirty="true" />
+                    <MudTextField Label="Numer telefonu" Class="mt-3" HelperText="Jeśli nie chcesz podawać nr.
+                                    telefonu podaj losową liczbę i ją zapamiętaj.
+                                    Pozwoli Ci ona na późniejsze ponowne zalogowanie
+                                    się i przejrzenie zdjęć, które już wcześniej przesłałeś."
+                                  HelperTextOnFocus="true" Variant="Variant.Text"
+                                  @bind-Value="userEntityModel.UserPhone" For="@(() => userEntityModel.UserPhone)" OnlyValidateIfDirty="true" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Zaloguj</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
 
 @code {
 

@@ -5,7 +5,6 @@ namespace WeddingApp.Controllers
 {
     public class FilesController(SqlServerDataController sqlServerDataController)
     {
-        private List<IBrowserFile> loadedFiles = new();
         private decimal progressPercent;
         private long maxFileSize = 15728640;
         private int maxAllowedFiles = 3;
@@ -18,12 +17,11 @@ namespace WeddingApp.Controllers
 
         public event Action<List<PictureEntity>> OnPictureLoad;
 
-        public async Task UploadFiles(InputFileChangeEventArgs e, int userID)
+        public async Task UploadFiles(IReadOnlyList<IBrowserFile> e, int userID)
         {
-            loadedFiles.Clear();
             progressPercent = 0;
 
-            foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+            foreach (var file in e)
             {
                 try
                 {
@@ -49,7 +47,7 @@ namespace WeddingApp.Controllers
 
                     await this.sqlServerDataController.AddPictureToDatabase(
                         userID: userID,
-                        picturePath: path);
+                        pathToPicture: path);
 
                     Console.WriteLine(
                         $"Unsafe Filename: {file.Name}");
@@ -62,6 +60,11 @@ namespace WeddingApp.Controllers
             }
         }
 
+        public async Task DeletePicture(string pathToPicture)
+        {
+            await this.sqlServerDataController.DeletePicture(pathToPicture);
+        }
+
         public async Task<List<PictureEntity>> LoadFiles()
         {
             return this.sqlServerDataController.GetAllPictures().Result;
@@ -69,11 +72,6 @@ namespace WeddingApp.Controllers
         private void NotifyStateChanged(decimal progressPercent)
         {
             this.OnStateChange?.Invoke(progressPercent);
-        }
-
-        private void NotifyLoadedPictures(List<PictureEntity> pictures)
-        {
-            this.OnPictureLoad?.Invoke(pictures);
         }
 
     }

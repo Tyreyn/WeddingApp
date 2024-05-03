@@ -64,6 +64,7 @@
 
         /// <summary>
         /// Delete picture by path procedure name.
+        /// Parameters: (@Path = path to picture).
         /// </summary>
         public static readonly string DeletePictureByPath = "WeddingDB.dbo.DELETE_PICTURE_BY_PATH";
     }

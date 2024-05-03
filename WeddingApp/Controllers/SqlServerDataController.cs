@@ -14,7 +14,6 @@
     /// </param>
     public class SqlServerDataController(SqlServerDataAccess sqlServerDataAccess)
     {
-
         /// <summary>
         /// Gets or sets SQL server data access.
         /// </summary>
@@ -120,13 +119,13 @@
         /// <param name="userID">
         /// ID of user who is adding new picture.
         /// </param>
-        /// <param name="picturePath">
+        /// <param name="pathToPicture">
         /// Path to new picture.
         /// </param>
         /// <returns>
         /// True, if added correctly.
         /// </returns>
-        public Task<bool> AddPictureToDatabase(int userID, string picturePath)
+        public Task<bool> AddPictureToDatabase(int userID, string pathToPicture)
         {
             Console.WriteLine("Starting adding picture to database");
             bool result = this.SqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(
@@ -134,18 +133,18 @@
                 new DynamicParameters(
                     new
                     {
-                        Path = picturePath,
+                        Path = pathToPicture,
                         ID = userID,
                     })).IsCompletedSuccessfully;
 
             if (result)
             {
-                Console.WriteLine($"User: {userID} added successfully picture {picturePath} to database");
+                Console.WriteLine($"User: {userID} added successfully picture {pathToPicture} to database");
                 return Task.FromResult(true);
             }
             else
             {
-                Console.WriteLine($"There is problem with adding {picturePath}");
+                Console.WriteLine($"There is problem with adding {pathToPicture}");
                 return Task.FromResult(false);
             }
         }
@@ -160,6 +159,38 @@
         {
             List<PictureEntity> pictureEntities = this.SqlServerDataAccess.ExecuteStoredProcedures<PictureEntity>(SqlCommands.GetAllPictures).Result;
             return Task.FromResult(pictureEntities);
+        }
+
+        /// <summary>
+        /// Delete picture from database.
+        /// </summary>
+        /// <param name="pathToPicture">
+        /// Path to picture.
+        /// </param>
+        /// <returns>
+        /// True, if deleted correctly.
+        /// </returns>
+        public Task<bool> DeletePicture(string pathToPicture)
+        {
+            Console.WriteLine("Starting adding picture to database");
+            bool result = this.SqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(
+                SqlCommands.DeletePictureByPath,
+                new DynamicParameters(
+                    new
+                    {
+                        Path = pathToPicture,
+                    })).IsCompletedSuccessfully;
+
+            if (result)
+            {
+                Console.WriteLine($"{pathToPicture} deleted from database");
+                return Task.FromResult(true);
+            }
+            else
+            {
+                Console.WriteLine($"There is problem with deleting {pathToPicture}");
+                return Task.FromResult(false);
+            }
         }
 
         /// <summary>
@@ -192,6 +223,5 @@
 
             return Task.FromResult(message);
         }
-
     }
 }

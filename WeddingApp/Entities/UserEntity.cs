@@ -19,7 +19,6 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Proszę podać imię")]
         public string UserName { get; set; }
 
-
         /// <summary>
         /// Gets or sets user phone number.
         /// </summary>

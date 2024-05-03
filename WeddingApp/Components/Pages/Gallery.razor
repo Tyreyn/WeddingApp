@@ -9,30 +9,42 @@
 @inject FilesController FilesController
 @inject CustomAuthState CustomAuthState
 
-<h3>Gallery</h3>
-<h3>@CustomAuthState.CurrentUserEntity.UserID</h3>
+<MudAppBar Color="Color.Primary">
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
+        <ButtonTemplate>
+            <MudIconButton HtmlTag="label"
+                           Color="Color.Info"
+                           Icon="@Icons.Material.Filled.PhotoCamera"
+                           for="@fileInput">
+            </MudIconButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
+        <ButtonTemplate>
+            <MudButton HtmlTag="label"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       for="@fileInput.Id">
+                Dodaj zdjęcie
+            </MudButton>
+        </ButtonTemplate>
+    </MudFileUpload>
+    @if (isLoading)
+    {
+        <p>Progres: @string.Format("{0:P0}", progressPercent)</p>
+    }
+</MudAppBar>
 
-<InputFile accept="image/*" capture="user" OnChange="OnInputFileChange">Zdjęcie</InputFile>
-<InputFile id="imageFile" accept="image/*" OnChange="OnInputFileChange">Galeria</InputFile>
 
-@if (isLoading)
-{
-    <p>Progress: @string.Format("{0:P0}", progressPercent)</p>
-}
-else
-{
-    <ul>
-        @foreach (PictureEntity picture in pictures)
-        {
-            <li>
-                <ul>
-                    <Picture pictureEntity="picture" />
-                </ul>
-            </li>
-        }
+<MudStack Row="true" Wrap="Wrap.Wrap" Spacing="12" Justify="Justify.Center" AlignItems="AlignItems.Center">
+    @foreach (PictureEntity picture in pictures)
+    {
+        <Picture pictureEntity="picture" CurrentUserID="CustomAuthState.CurrentUserEntity.UserID" DeletePicture="@DeletePicture" />
+    }
+</MudStack>
 
-    </ul>
-}
+
 
 
 @code {
@@ -55,7 +67,7 @@ else
         return base.OnAfterRenderAsync(firstRender);
     }
 
-    private async Task OnInputFileChange(InputFileChangeEventArgs inputFileChangeEventArgs)
+    private async Task OnInputFileChange(IReadOnlyList<IBrowserFile> inputFileChangeEventArgs)
     {
         isLoading = true;
         FilesController.OnStateChange += UploadingPictureProgress;
@@ -72,5 +84,12 @@ else
     {
         this.progressPercent = progressPercent;
         await InvokeAsync(() => StateHasChanged());
+    }
+
+    private async Task DeletePicture(string pathToPicture)
+    {
+        await FilesController.DeletePicture(pathToPicture);
+        pictures = FilesController.LoadFiles().Result;
+        StateHasChanged();
     }
 }
