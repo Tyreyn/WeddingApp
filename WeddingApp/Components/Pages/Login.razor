@@ -1,35 +1,43 @@
 ﻿@using WeddingApp.Entities
+@using MudExtensions.Enums
 
+<MudAnimate @ref="MudAnimate"
+            Selector=".loginMessage"
+            Duration="1"
+            AnimationType="AnimationType.SlideY"
+            Value="15"
+            ValueSecondary="0"
+            Delay="0"
+            IterationCount="1"
+            AnimationTiming="AnimationTiming.Linear"
+            AnimationDirection="AnimationDirection.Reverse"
+            AnimationFillMode="AnimationFillMode.Both" />
 
 <EditForm Model="@userEntityModel" OnValidSubmit="@(() => SignIn.InvokeAsync(userEntityModel))" FormName="LoginForm" Context="formContext">
     <DataAnnotationsValidator />
-    <MudGrid Justify="Justify.Center">
-        @if (LoginMessage != null)
-        {
-            <MudItem>
-                <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-                    <MudText Color="Color.Error">@LoginMessage.Item2</MudText>
-                    </MudPaper>
-                </MudItem>
-        }
-        <MudItem Style="display:flex;">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField Label="Imię"
-                                  @bind-Value="userEntityModel.UserName" For="@(() => userEntityModel.UserName)" OnlyValidateIfDirty="true" />
-                    <MudTextField Label="Numer telefonu" Class="mt-3" HelperText="Jeśli nie chcesz podawać nr.
+    @if (LoginMessage != null)
+    {
+
+        <MudPaper Class="loginMessage d-flex align-center justify-center mud-width-full py-8">
+            <MudText Color="Color.Error">@LoginMessage.Item2</MudText>
+            </MudPaper>
+
+    }
+    <MudCard>
+        <MudCardContent>
+            <MudTextField Label="Imię"
+                          @bind-Value="userEntityModel.UserName" For="@(() => userEntityModel.UserName)" OnlyValidateIfDirty="true" />
+            <MudTextField Label="Numer telefonu" Class="mt-3" HelperText="Jeśli nie chcesz podawać nr.
                                     telefonu podaj losową liczbę i ją zapamiętaj.
                                     Pozwoli Ci ona na późniejsze ponowne zalogowanie
                                     się i przejrzenie zdjęć, które już wcześniej przesłałeś."
-                                  HelperTextOnFocus="true" Variant="Variant.Text"
-                                  @bind-Value="userEntityModel.UserPhone" For="@(() => userEntityModel.UserPhone)" OnlyValidateIfDirty="true" />
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Zaloguj</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-    </MudGrid>
+                          HelperTextOnFocus="true" Variant="Variant.Text"
+                          @bind-Value="userEntityModel.UserPhone" For="@(() => userEntityModel.UserPhone)" OnlyValidateIfDirty="true" />
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Zaloguj</MudButton>
+        </MudCardActions>
+    </MudCard>
 </EditForm>
 
 
@@ -43,4 +51,7 @@
 
     [Parameter]
     public Tuple<bool, string> LoginMessage { get; set; }
+
+    [Parameter]
+    public MudAnimate MudAnimate { get; set; }
 }

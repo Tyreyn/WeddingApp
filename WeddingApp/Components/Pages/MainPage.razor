@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
 @using System.Security.Claims
+@using MudExtensions.Enums
 @using WeddingApp.Controllers
 @using WeddingApp.Entities
 @inject CustomAuthState CustomAuthState
@@ -12,18 +13,39 @@
 @attribute [AllowAnonymous]
 @rendermode @(new InteractiveServerRenderMode(false))
 
-<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge">
+<MudContainer MaxWidth="MaxWidth.Large">
+    @if (!pauseAnimation){
+    <MudAnimate @ref="mudAnimate"
+                Selector=".loginClass"
+                Duration="1"
+                AnimationType="AnimationType.Blur"
+                Value="100"
+                ValueSecondary="0"
+                Delay="0"
+                IterationCount="1"
+                AnimationTiming="AnimationTiming.Linear"
+                AnimationDirection="AnimationDirection.Reverse"
+                AnimationFillMode="AnimationFillMode.Both"/>
+    }
+
     @if (CustomAuthState.CurrentUserEntity.UserName == null)
     {
+        <div Style="align-content: center; padding-top: 20%; padding-left: 50%">
         <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+        </div>
     }
     else
     {
         @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
         {
             //<MudPaper Outlined="false" Class="centered-paper ma-48">
-            <MudStack Wrap="Wrap.Wrap" Spacing="12" Justify="Justify.Center" AlignItems="AlignItems.Center" Style="padding-top: 10%;">
-                <Login SignIn="@SignIn" LoginMessage="@LoginMessage" />
+            <MudStack Wrap="Wrap.Wrap"
+                      Class="loginClass"
+                      Spacing="12"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center"
+                      Style="padding-top: 10%;">
+                <Login SignIn="@SignIn" LoginMessage="@LoginMessage" MudAnimate="@mudAnimate" />
             </MudStack>
             //</MudPaper>
         }
@@ -45,9 +67,12 @@
         width: 100%;
     }
 </style>
+
 @code {
+    MudAnimate mudAnimate;
     private Tuple<bool, string> LoginMessage;
     public bool connection;
+    private bool pauseAnimation = false;
     protected override async Task OnInitializedAsync()
     {
         await LoadStateAsync();
@@ -74,6 +99,7 @@
 
     private async void SignIn(UserEntity userEntityModel)
     {
+        pauseAnimation = true;
         LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)
             .AuthenticateUser(userEntityModel.UserName, userEntityModel.UserPhone);
         StateHasChanged();

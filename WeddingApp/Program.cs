@@ -7,6 +7,7 @@ using WeddingApp.Context;
 using WeddingApp.Controllers;
 using WeddingApp.Entities;
 using MudBlazor.Services;
+using MudExtensions.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddUserSecrets("ConnectionStringClass");
@@ -16,6 +17,7 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddMudServices();
+builder.Services.AddMudExtensions();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();

@@ -5,7 +5,7 @@
 
 <MudPaper Class="d-flex align-center">
     <MudStack Spacing=0>
-        <MudImage Src="@this.pictureEntity.PicturePath" Width="400" Height="400" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" />
+        <MudImage Src="@this.pictureEntity.PicturePath" ObjectFit="ObjectFit.ScaleDown" Elevation="25" Class="rounded-lg ma-4" Fluid="true" />
         @if (this.pictureEntity.UserID == this.CurrentUserID)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Delete" aria-label="delete" OnClick="@(()=>DeletePicture.InvokeAsync(this.pictureEntity.PicturePath))"/>

@@ -10,7 +10,7 @@
 @inject CustomAuthState CustomAuthState
 
 <MudAppBar Color="Color.Primary">
-    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
+    @* <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
         <ButtonTemplate>
             <MudIconButton HtmlTag="label"
                            Color="Color.Info"
@@ -18,26 +18,30 @@
                            for="@fileInput">
             </MudIconButton>
         </ButtonTemplate>
-    </MudFileUpload>
-    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
+    </MudFileUpload> *@
+     <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
         <ButtonTemplate>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
                        Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload"
+                       StartIcon="@Icons.Material.Filled.PhotoCamera"
                        for="@fileInput.Id">
                 Dodaj zdjęcie
             </MudButton>
         </ButtonTemplate>
-    </MudFileUpload>
+    </MudFileUpload> 
     @if (isLoading)
     {
-        <p>Progres: @string.Format("{0:P0}", progressPercent)</p>
+        <MudProgressLinear Color="Color.Secondary" Striped="true" Value="@(Convert.ToDouble(progressPercent)*100)" Class="my-7">
+            <MudText Typo="Typo.subtitle1" Color="Color.Dark">
+                <b>@(Convert.ToDouble(progressPercent) * 100)%</b>
+            </MudText>
+        </MudProgressLinear>
     }
 </MudAppBar>
 
 
-<MudStack Row="true" Wrap="Wrap.Wrap" Spacing="12" Justify="Justify.Center" AlignItems="AlignItems.Center">
+<MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Justify="Justify.Center" AlignItems="AlignItems.Center">
     @foreach (PictureEntity picture in pictures)
     {
         <Picture pictureEntity="picture" CurrentUserID="CustomAuthState.CurrentUserEntity.UserID" DeletePicture="@DeletePicture" />
@@ -49,7 +53,7 @@
 
 @code {
     public List<PictureEntity> pictures = new();
-
+    MudGallery? _gallery;
     private bool isLoading;
     private bool shouldRender;
     public int readbytes;

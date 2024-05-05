@@ -44,7 +44,7 @@
 
             UserEntity userFromDatabase = this.GetUserEntity(userPhone).Result;
 
-            if (userFromDatabase.UserName == string.Empty)
+            if (userFromDatabase.UserName == null)
             {
                 return Task.FromResult(new Tuple<bool, string>(
                     false,
