@@ -2,6 +2,7 @@
 @inject IWebHostEnvironment Environment
 @using System.Net.Http.Headers
 @using System.Text.Json
+@using MudExtensions
 @using WeddingApp.Components.Elements
 @using WeddingApp.Controllers
 @using WeddingApp.Entities
@@ -29,7 +30,7 @@
                 Dodaj zdjęcie
             </MudButton>
         </ButtonTemplate>
-    </MudFileUpload> 
+    </MudFileUpload>
     @if (isLoading)
     {
         <MudProgressLinear Color="Color.Secondary" Striped="true" Value="@(Convert.ToDouble(progressPercent)*100)" Class="my-7">
