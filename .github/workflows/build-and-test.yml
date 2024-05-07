@@ -38,6 +38,11 @@ jobs:
     - name: Publish
       run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
 
+    - name: Install dependencies
+      run: npm ci
+    - name: Install Playwright
+      run: npx playwright install --with-deps
+      
     - name: Execute frontend unit tests
       env:
         ConnectionStringClass:mainpc : ${{ secrets.MAINPC }}
