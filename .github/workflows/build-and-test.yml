@@ -29,11 +29,17 @@ jobs:
       run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
-    - name: Execute unit tests
+    - name: Execute backend unit tests
       env:
         ConnectionStringClass:mainpc : ${{ secrets.MAINPC }}
-      run: dotnet test
+      run: dotnet test --filter "FullyQualifiedName=TestsLibrary.Backend"
       working-directory: TestsLibrary
 
     - name: Publish
       run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
+
+    - name: Execute frontend unit tests
+      env:
+        ConnectionStringClass:mainpc : ${{ secrets.MAINPC }}
+      run: dotnet test --filter "FullyQualifiedName=TestsLibrary.Frontend"
+      working-directory: TestsLibrary
