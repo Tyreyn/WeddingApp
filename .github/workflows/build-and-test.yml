@@ -39,7 +39,7 @@ jobs:
       run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
 
     - name: Install dependencies
-      run: pwsh bin/Debug/net8.0/playwright.ps1 install
+      run: pwsh ./bin/Debug/net8.0/playwright.ps1 install
       
     - name: Execute frontend unit tests
       env:
