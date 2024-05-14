@@ -1,15 +1,34 @@
-﻿using Microsoft.Playwright;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using TestsLibrary.Helpers.Entity;
+using WeddingApp.Context;
+using WeddingApp.Helpers.SqlCommands;
 
 namespace TestsLibrary.Frontend
 {
-    [Parallelizable(ParallelScope.Self)]
+    [Parallelizable(ParallelScope.All)]
     [TestFixture]
     public class MainPage
     {
-        [Test]
-        public async Task LoginWithCorrectCredientals()
+        public IConfiguration configuration;
+
+        public string pageUrl = string.Empty;
+        [SetUp]
+        public void Setup()
         {
+            configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddUserSecrets<ConnectionStringClass>()
+                .AddEnvironmentVariables()
+                .Build();
+            pageUrl = this.configuration.GetSection("AppUrl").Value;
+        }
+
+        [Test]
+        public async Task LoginWithCorrectCredientials()
+        {
+            Console.WriteLine("Start new browser");
             using var playwright = await Playwright.CreateAsync();
             await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
@@ -18,14 +37,85 @@ namespace TestsLibrary.Frontend
             var context = await browser.NewContextAsync();
             var page = await context.NewPageAsync();
 
-            await page.GotoAsync("http://3.71.218.200/");
+            Console.WriteLine("Start page");
+            await page.GotoAsync(pageUrl);
 
+            Console.WriteLine("Start put correct name");
             await page.Locator("input[type=\"text\"]").First.FillAsync("Michał");
 
+            Console.WriteLine("Start put correct number");
             await page.Locator("input[type=\"text\"]").Nth(1).FillAsync("123");
 
+            Console.WriteLine("Click Zaloguj button");
             await page.GetByRole(AriaRole.Button, new() { NameString = "Zaloguj" }).ClickAsync();
 
+            Console.WriteLine("Check if there is Dodaj zdjęcie button");
+            await page.Locator("label:has-text(\"Dodaj zdjęcie\")").IsVisibleAsync();
+        }
+
+        [Test]
+        public async Task LoginWithWrongCredientials()
+        {
+            Console.WriteLine("Start new browser");
+            using var playwright = await Playwright.CreateAsync();
+            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = false,
+            });
+            var context = await browser.NewContextAsync();
+            var page = await context.NewPageAsync();
+
+            Console.WriteLine("Start page");
+            await page.GotoAsync(pageUrl);
+
+            Console.WriteLine("Start put correct name");
+            await page.Locator("input[type=\"text\"]").First.FillAsync("WrongName");
+
+            Console.WriteLine("Start put correct number");
+            await page.Locator("input[type=\"text\"]").Nth(1).FillAsync("123");
+
+            Console.WriteLine("Click Zaloguj button");
+            await page.GetByRole(AriaRole.Button, new() { NameString = "Zaloguj" }).ClickAsync();
+
+            Console.WriteLine("Check if there is Error message");
+            await page.GetByText("Imię nie zgadza się z podanym numerem telefonu!").IsVisibleAsync();
+
+        }
+
+        [Test]
+        public async Task LoginWithWrongCredientialsThenWithCorrect()
+        {
+            Console.WriteLine("Start new browser");
+            using var playwright = await Playwright.CreateAsync();
+            await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            {
+                Headless = false,
+            });
+            var context = await browser.NewContextAsync();
+            var page = await context.NewPageAsync();
+
+            Console.WriteLine("Start page");
+            await page.GotoAsync(pageUrl);
+
+            Console.WriteLine("Start put correct name");
+            await page.Locator("input[type=\"text\"]").First.FillAsync("WrongName");
+
+            Console.WriteLine("Start put correct number");
+            await page.Locator("input[type=\"text\"]").Nth(1).FillAsync("123");
+
+            Console.WriteLine("Click Zaloguj button");
+            await page.GetByRole(AriaRole.Button, new() { NameString = "Zaloguj" }).ClickAsync();
+
+            Console.WriteLine("Check if there is Error message");
+            await page.GetByText("Imię nie zgadza się z podanym numerem telefonu!").IsVisibleAsync();
+
+            Console.WriteLine("Start put correct name");
+            await page.Locator("input[type=\"text\"]").First.FillAsync("Michał");
+
+            Console.WriteLine("Click Zaloguj button");
+            await page.GetByRole(AriaRole.Button, new() { NameString = "Zaloguj" }).ClickAsync();
+
+            Console.WriteLine("Check if there is Dodaj zdjęcie button");
             await page.Locator("label:has-text(\"Dodaj zdjęcie\")").IsVisibleAsync();
         }
     }
