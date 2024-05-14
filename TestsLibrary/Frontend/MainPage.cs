@@ -22,7 +22,7 @@ namespace TestsLibrary.Frontend
                 .AddUserSecrets<ConnectionStringClass>()
                 .AddEnvironmentVariables()
                 .Build();
-            pageUrl = this.configuration.GetSection("AppUrl").Value;
+            pageUrl = this.configuration.GetSection("AppUrl:Url").Value;
         }
 
         [Test]

@@ -14,6 +14,6 @@ namespace TestsLibrary.Helpers.Entity
         /// <summary>
         /// The URL.
         /// </summary>
-        public string Url { get; set; }
+        public string UrlString { get; set; }
     }
 }
