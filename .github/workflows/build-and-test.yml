@@ -48,6 +48,6 @@ jobs:
       
     - name: Execute frontend unit tests
       env:
-        ConnectionStringClass:mainpc : ${{ secrets.MAINPC }}
+        AppUrl:Url : ${{ secrets.APPURL }}
       run: dotnet test --filter "FullyQualifiedName=TestsLibrary.Frontend"
       working-directory: TestsLibrary
