@@ -15,44 +15,43 @@
 @rendermode @(new InteractiveServerRenderMode(false))
 
 <MudContainer MaxWidth="MaxWidth.Large">
-    @if (!pauseAnimation){
-    <MudAnimate @ref="mudAnimate"
-                Selector=".loginClass"
-                Duration="1"
-                AnimationType="AnimationType.Blur"
-                Value="100"
-                ValueSecondary="0"
-                Delay="0"
-                IterationCount="1"
-                AnimationTiming="AnimationTiming.Linear"
-                AnimationDirection="AnimationDirection.Reverse"
-                AnimationFillMode="AnimationFillMode.Both"/>
+    @if (!pauseAnimation)
+    {
+        <MudAnimate @ref="mudAnimate"
+                    Selector=".loginClass"
+                    Duration="1"
+                    AnimationType="AnimationType.Blur"
+                    Value="100"
+                    ValueSecondary="0"
+                    Delay="0"
+                    IterationCount="1"
+                    AnimationTiming="AnimationTiming.Linear"
+                    AnimationDirection="AnimationDirection.Reverse"
+                    AnimationFillMode="AnimationFillMode.Both" />
     }
 
     @if (CustomAuthState.CurrentUserEntity.UserName == null)
     {
         <div Style="align-content: center; padding-top: 20%; padding-left: 50%">
-        <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
+            <MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" />
         </div>
     }
     else
     {
         @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
         {
-            //<MudPaper Outlined="false" Class="centered-paper ma-48">
             <MudStack Wrap="Wrap.Wrap"
                       Class="loginClass"
                       Spacing="12"
                       Justify="Justify.Center"
                       AlignItems="AlignItems.Center"
-                      Style="padding-top: 10%;">
+                      Style="padding-top: 30%;">
                 <Login SignIn="@SignIn" LoginMessage="@LoginMessage" MudAnimate="@mudAnimate" />
             </MudStack>
-            //</MudPaper>
         }
         else
         {
-            <MudPaper>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
                 <Gallery />
             </MudPaper>
         }
@@ -67,9 +66,18 @@
         height: 100%;
         width: 100%;
     }
+
+    html, body {
+        background-image: url(@backgroundPath);
+        background-repeat: space;
+        background-attachment: fixed;
+        background-position: 0% 0%;
+        background-size: cover;
+    }
 </style>
 
 @code {
+    private string backgroundPath;
     MudAnimate mudAnimate;
     private Tuple<bool, string> LoginMessage;
     public bool connection;
@@ -82,6 +90,8 @@
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
+        this.CheckAndCheckBackgroundPath();
+
         if (CustomAuthState.CurrentUserEntity.UserName == null)
         {
             CustomAuthState.CurrentUserEntity.UserName = string.Empty;
@@ -104,5 +114,24 @@
         LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)
             .AuthenticateUser(userEntityModel.UserName, userEntityModel.UserPhone);
         StateHasChanged();
+    }
+
+    private async void CheckAndCheckBackgroundPath()
+    {
+        if (CustomAuthState.CurrentUserEntity.UserName == null
+            || CustomAuthState.CurrentUserEntity.UserName == string.Empty)
+        {
+            string newBackgroundPath = "../../wwwroot/login_background.png";
+            if (backgroundPath == newBackgroundPath) return;
+            backgroundPath = newBackgroundPath;
+            StateHasChanged();
+        }
+        else
+        {
+            string newBackgroundPath = "../../wwwroot/gallery_background.jpg";
+            if (backgroundPath == newBackgroundPath) return;
+            backgroundPath = newBackgroundPath;
+            StateHasChanged();
+        }
     }
 }

@@ -4,7 +4,7 @@
 
 <MudAnimate @ref="MudAnimate"
             Selector=".loginMessage"
-            Duration="1"
+            Duration="0.51"
             AnimationType="AnimationType.SlideY"
             Value="15"
             ValueSecondary="0"
@@ -19,15 +19,15 @@
     @if (LoginMessage != null)
     {
 
-        <MudPaper Class="loginMessage d-flex align-center justify-center mud-width-full py-8">
-            <MudText Color="Color.Error">@LoginMessage.Item2</MudText>
+        <MudPaper Class="loginMessage d-flex align-center justify-center mud-width-full py-8" Style="background-color: rgba(255,159,151,0.90)">
+            <MudText Style="color: rgba(193,25,25,1)">@LoginMessage.Item2</MudText>
             </MudPaper>
 
     }
-    <MudCard>
+    <MudCard Style="background-color: rgba(255,196,151,0.90)">
         <MudCardContent>
             <MudTextField Label="Imię"
-                          @bind-Value="userEntityModel.UserName" For="@(() => userEntityModel.UserName)" OnlyValidateIfDirty="true" />
+                          @bind-Value="userEntityModel.UserName" For="@(() => userEntityModel.UserName)" OnlyValidateIfDirty="true"/>
             <MudTextField Label="Numer telefonu" Class="mt-3" HelperText="Jeśli nie chcesz podawać nr.
                                     telefonu podaj losową liczbę i ją zapamiętaj.
                                     Pozwoli Ci ona na późniejsze ponowne zalogowanie
@@ -36,11 +36,36 @@
                           @bind-Value="userEntityModel.UserPhone" For="@(() => userEntityModel.UserPhone)" OnlyValidateIfDirty="true" />
         </MudCardContent>
         <MudCardActions>
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Zaloguj</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"
+                       Style="color: rgba(85,65,50,0.9);background: rgba(255,213,150,0.90)"
+                       Class="ml-auto shades-text text-white">
+                Zaloguj
+            </MudButton>
         </MudCardActions>
     </MudCard>
 </EditForm>
 
+<style>
+    .mud-input:focus-within~label.mud-input-label.mud-input-label-inputcontrol {
+        color: rgba(170,142,100,1);
+    }
+
+    .mud-input-control>.mud-input-control-input-container>.mud-input-label-inputcontrol{
+        color: rgba(85,65,50,1);
+    }
+
+    .mud-input-helper-text{
+        color: rgba(170,142,100,1);
+    }
+
+    .mud-input.mud-input-underline:before{
+        border-bottom: 2px solid rgb(255,226,150);
+    }
+    .mud-input.mud-input-underline:after {
+        border-bottom: 2px solid rgb(255,213,150);
+    }
+
+</style>
 
 @code {
 

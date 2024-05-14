@@ -10,21 +10,14 @@
 @inject FilesController FilesController
 @inject CustomAuthState CustomAuthState
 
-<MudAppBar Color="Color.Primary">
-    @* <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
-        <ButtonTemplate>
-            <MudIconButton HtmlTag="label"
-                           Color="Color.Info"
-                           Icon="@Icons.Material.Filled.PhotoCamera"
-                           for="@fileInput">
-            </MudIconButton>
-        </ButtonTemplate>
-    </MudFileUpload> *@
+<MudAppBar Style="background-image: radial-gradient(circle, rgba(255, 213, 211, 1) 0%, rgba(255, 177, 151, 1) 29%, rgba(252, 166, 141, 0.8) 58%, rgba(255, 220, 211, 1) 100%); background-color:transparent"
+    Class="deeporange lighten-4">
      <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
         <ButtonTemplate>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
-                       Color="Color.Primary"
+                       Class="deeporange accent-3 mud-elevation-25 rounded"
+                       Style="color: rgba(85,65,50,0.9)"
                        StartIcon="@Icons.Material.Filled.PhotoCamera"
                        for="@fileInput.Id">
                 Dodaj zdjęcie
@@ -49,7 +42,15 @@
     }
 </MudStack>
 
-
+<style>
+    html, body {
+        background-image: url("../../wwwroot/gallery_background.png");
+        background-repeat: space;
+        background-attachment: fixed;
+        background-position: 0% 0%;
+        background-size: cover;
+    }
+</style>
 
 
 @code {
