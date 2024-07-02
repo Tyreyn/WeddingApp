@@ -6,7 +6,8 @@
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.Authorization;
     using Microsoft.AspNetCore.Http;
-    using WeddingApp.Entities;
+    using WeddingApp.Data.Entities;
+    using WeddingApp.Data.Operations;
 
     /// <summary>
     /// Cookie authentication state provider.
@@ -14,20 +15,12 @@
     /// <param name="httpContextAccessor">
     /// Provides access to current http context accessor.
     /// </param>
-    /// <param name="SqlServerDataController">
-    /// Provides access to SQL server data controller.
-    /// </param>
     public class CustomAuthStateProviderController(
-        SqlServerDataController sqlServerDataController,
         NavigationManager navigationManager,
         ILocalStorageService localStorageService,
+        UserOperations userOperations,
         CustomAuthState customAuthState) : AuthenticationStateProvider
     {
-
-        /// <summary>
-        /// Gets or sets access to SQL server data access.
-        /// </summary>
-        public SqlServerDataController SqlServerDataController { get; set; } = sqlServerDataController;
 
         public ILocalStorageService LocalStorageService { get; set; } = localStorageService;
 
@@ -37,6 +30,8 @@
         public NavigationManager NavigationManager { get; set; } = navigationManager;
 
         public CustomAuthState CustomAuthState { get; set; } = customAuthState;
+
+        public UserOperations UserOperations { get; set; } = userOperations;
 
         public Guid id = Guid.NewGuid();
 
@@ -48,7 +43,7 @@
                 : this.CustomAuthState.CurrentUserClaims.Identity.Name)}");
 
             Tuple<bool, string> loginSuccess =
-                this.SqlServerDataController.CheckIfUserExistsInDatabaseAndDataCorrectness(this.CustomAuthState.CurrentUserClaims).Result;
+                this.UserOperations.CheckIfUserExistsInDatabaseAndDataCorrectness(this.CustomAuthState.CurrentUserClaims).Result;
 
             if (loginSuccess.Item1 &&
                 loginSuccess.Item2 == string.Empty)
@@ -86,7 +81,7 @@
             ClaimsPrincipal user = new ClaimsPrincipal(identity);
 
             Tuple<bool, string> loginSuccess = await
-                this.SqlServerDataController.CheckIfUserExistsInDatabaseAndDataCorrectness(user);
+                this.UserOperations.CheckIfUserExistsInDatabaseAndDataCorrectness(user);
 
 
             if ((loginSuccess.Item1 && loginSuccess.Item2 == string.Empty) || (!loginSuccess.Item1 && loginSuccess.Item2 != string.Empty))
@@ -102,11 +97,12 @@
             {
                 Console.WriteLine("User does not exists in database");
 
-                await this.SqlServerDataController.AddUserToDatabase(userPhoneNumber, userName);
+                await this.UserOperations.AddUserToDatabase(userPhoneNumber, userName);
                 await this.SetCurrentUser(userPhoneNumber, user);
             }
 
             return loginSuccess;
+
         }
 
         /// <summary>
@@ -149,7 +145,7 @@
         private async Task SetCurrentUser(string userPhoneNumber, ClaimsPrincipal? claims = null)
         {
             this.CustomAuthState.CurrentUserClaims = claims;
-            this.CustomAuthState.CurrentUserEntity = await this.SqlServerDataController.GetUserEntity(userPhoneNumber);
+            this.CustomAuthState.CurrentUserEntity = await this.UserOperations.GetUserEntity(userPhoneNumber);
         }
     }
 }

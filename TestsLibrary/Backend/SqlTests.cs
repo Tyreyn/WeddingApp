@@ -1,28 +1,27 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Dapper;
-using System.Collections.Generic;
-using System;
 using WeddingApp.Helpers.SqlCommands;
 using TestsLibrary.Helpers.Entity;
+using WeddingApp.Data.Entities;
+using WeddingApp.Data.Operations;
+using WeddingApp.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace TestsLibrary.Backend
 {
     [TestFixture]
     public class SqlTests
     {
-        /// <summary>
-        /// SQL server data access.
-        /// </summary>
-        private SqlServerDataAccess sqlServerDataAccess;
 
         /// <summary>
         /// The test user object.
         /// </summary>
         private UserEntity testUser;
 
+        private UserOperations userOperations;
 
         private int maxUsersID;
 
+        private WeddingAppUserContext userContext;
 
         [SetUp]
         public void Setup()
@@ -32,32 +31,36 @@ namespace TestsLibrary.Backend
                 .AddUserSecrets<ConnectionStringClass>()
                 .AddEnvironmentVariables()
                 .Build();
-            testUser = new UserEntity();
-            testUser.UserPhone = "111111111";
-            testUser.UserName = "test user";
-            sqlServerDataAccess = new SqlServerDataAccess(configuration);
-            List<MaxId> tmp = sqlServerDataAccess.ExecuteStoredProcedures<MaxId>(SqlCommands.GetMaxUserId).Result;
-            this.maxUsersID = tmp[0].MAX;
-        }
 
-        [Test]
-        public void CheckSqlServerConnection()
-        {
-            Assert.That(sqlServerDataAccess.CheckConnectionStatusAndSetProperConnectionString().Result);
+            var options = new DbContextOptionsBuilder<WeddingAppUserContext>();
+            options.UseMySQL(configuration.GetConnectionString("MySQL"));
+            options.EnableSensitiveDataLogging();
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+            userContext = new WeddingAppUserContext(options.Options);
+
+            userOperations = new UserOperations(userContext);
+
+            testUser = new UserEntity { UserPhone = "111111111", UserName = "test user" };
+            try
+            {
+                int tmp = userOperations.GetUsers().Result.LastOrDefault().UserID;
+                this.maxUsersID = tmp;
+            }catch (Exception ex)
+            {
+                this.maxUsersID=0;
+            }
         }
 
         [TestCase(true)]
         public void CheckProperUserInsert(bool expectedResult = true)
         {
-            List<UserEntity> tmpUserEntity = sqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(SqlCommands.ShowAllUsers).Result;
-            bool result = sqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(SqlCommands.InsertNewUser, new DynamicParameters(
-                        new
-                        {
-                            Phone = this.testUser.UserPhone,
-                            Name = this.testUser.UserName
-                        })).IsCompletedSuccessfully;
-            tmpUserEntity = sqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(SqlCommands.ShowAllUsers).Result;
-            Assert.That(result == expectedResult);
+            List<UserEntity> tmpUserEntity = userOperations.GetUsers().Result;
+            int before = tmpUserEntity.Count;
+            this.userOperations.AddUserToDatabase(testUser.UserPhone, testUser.UserName);
+            tmpUserEntity = userOperations.GetUsers().Result;
+            int after = tmpUserEntity.Count;
+            Assert.That((after > before) == expectedResult);
         }
 
         [Test]
@@ -75,11 +78,10 @@ namespace TestsLibrary.Backend
         }
 
         [TearDown]
-        public void TearDown()
+        public async Task TearDownAsync()
         {
-            sqlServerDataAccess.ExecuteStoredProcedures<UserEntity>(SqlCommands.DeleteUserById, new DynamicParameters(new { ID = this.maxUsersID + 1 }));
-            sqlServerDataAccess.ExecuteStoredProcedures<string>(SqlCommands.Reseed, new DynamicParameters(new { LASTID = this.maxUsersID }));
-
+            await this.userOperations.DeleteUserById(maxUsersID + 1);
+            await userContext.Database.ExecuteSqlAsync($"ALTER TABLE users AUTO_INCREMENT = {this.maxUsersID + 1};");
         }
 
     }

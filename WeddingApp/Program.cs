@@ -1,13 +1,15 @@
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using WeddingApp.Components;
-using WeddingApp.Context;
-using WeddingApp.Controllers;
-using WeddingApp.Entities;
+using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using MudExtensions.Services;
+using WeddingApp.Components;
+using WeddingApp.Controllers;
+using WeddingApp.Data.Entities;
+using WeddingApp.Data.Operations;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddUserSecrets("ConnectionStringClass");
@@ -21,10 +23,16 @@ builder.Services.AddMudExtensions();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddDbContext<WeddingApp.Data.Context.WeddingAppUserContext>(options => {
+    options.UseMySQL(builder.Configuration.GetConnectionString("MySQL"));
+    options.EnableSensitiveDataLogging();
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
+
+builder.Services.AddScoped<UserOperations>();
+builder.Services.AddScoped<PictureOperations>();
 builder.Services.AddSingleton<CustomAuthState>();
-builder.Services.AddSingleton<SqlServerDataAccess>();
-builder.Services.AddSingleton<SqlServerDataController>();
-builder.Services.AddSingleton<FilesController>();
+builder.Services.AddScoped<FilesController>();
 builder.Services.AddSingleton<UserEntity>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProviderController>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
