@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using WeddingApp.Entities;
+using WeddingApp.Data.Entities;
+using WeddingApp.Data.Operations;
 
 namespace WeddingApp.Controllers
 {
-    public class FilesController(SqlServerDataController sqlServerDataController)
+    public class FilesController(PictureOperations pictureOperations)
     {
         private decimal progressPercent;
         private long maxFileSize = 15728640;
@@ -11,11 +12,11 @@ namespace WeddingApp.Controllers
         public string statusMessage;
         private List<string> pathtopictures = new();
 
-        private SqlServerDataController sqlServerDataController { get; set; } = sqlServerDataController;
-
         public event Action<decimal> OnStateChange;
 
         public event Action<List<PictureEntity>> OnPictureLoad;
+
+        private PictureOperations PictureOperations { get; set; } = pictureOperations;
 
         public async Task UploadFiles(IReadOnlyList<IBrowserFile> e, int userID)
         {
@@ -45,7 +46,7 @@ namespace WeddingApp.Controllers
                         this.NotifyStateChanged(progressPercent);
                     }
 
-                    await this.sqlServerDataController.AddPictureToDatabase(
+                    await this.PictureOperations.AddPictureToDatabase(
                         userID: userID,
                         pathToPicture: path);
 
@@ -62,13 +63,14 @@ namespace WeddingApp.Controllers
 
         public async Task DeletePicture(string pathToPicture)
         {
-            await this.sqlServerDataController.DeletePicture(pathToPicture);
+            await this.PictureOperations.DeletePicture(pathToPicture);
         }
 
         public async Task<List<PictureEntity>> LoadFiles()
         {
-            return this.sqlServerDataController.GetAllPictures().Result;
+            return this.PictureOperations.GetAllPictures().Result;
         }
+
         private void NotifyStateChanged(decimal progressPercent)
         {
             this.OnStateChange?.Invoke(progressPercent);

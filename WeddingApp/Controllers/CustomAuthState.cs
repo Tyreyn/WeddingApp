@@ -1,7 +1,7 @@
 ﻿namespace WeddingApp.Controllers
 {
     using System.Security.Claims;
-    using WeddingApp.Entities;
+    using WeddingApp.Data.Entities;
 
     public class CustomAuthState
     {
@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets current user entity.
         /// </summary>
-        public UserEntity CurrentUserEntity { get; set; } = new UserEntity();
+        public UserEntity CurrentUserEntity { get; set; } = new UserEntity { UserName = null, UserPhone = null};
 
     }
 }

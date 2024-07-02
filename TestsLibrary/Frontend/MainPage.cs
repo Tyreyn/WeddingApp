@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
-using TestsLibrary.Helpers.Entity;
-using WeddingApp.Context;
-using WeddingApp.Helpers.SqlCommands;
+using WeddingApp.Data.Entities;
 
 namespace TestsLibrary.Frontend
 {

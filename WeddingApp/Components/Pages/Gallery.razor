@@ -5,14 +5,14 @@
 @using MudExtensions
 @using WeddingApp.Components.Elements
 @using WeddingApp.Controllers
-@using WeddingApp.Entities
+@using WeddingApp.Data.Entities
 @inject IHttpClientFactory ClientFactory
 @inject FilesController FilesController
 @inject CustomAuthState CustomAuthState
 
 <MudAppBar Style="background-image: radial-gradient(circle, rgba(255, 213, 211, 1) 0%, rgba(255, 177, 151, 1) 29%, rgba(252, 166, 141, 0.8) 58%, rgba(255, 220, 211, 1) 100%); background-color:transparent"
-    Class="deeporange lighten-4">
-     <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
+           Class="deeporange lighten-4">
+    <MudFileUpload T="IReadOnlyList<IBrowserFile>" Context="fileInput" FilesChanged="OnInputFileChange" Accept="image/*">
         <ButtonTemplate>
             <MudButton HtmlTag="label"
                        Variant="Variant.Filled"
