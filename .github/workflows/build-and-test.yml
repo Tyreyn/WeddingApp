@@ -36,7 +36,7 @@ jobs:
       working-directory: TestsLibrary
 
     - name: Publish
-      run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }} /p:AllowUntrustedCertificate=true
+      run: msbuild $env:Project_Name /p:DeployOnBuild=true /p:AllowUntrustedCertificate=true /p:PublishProfile=WeddingApp\Properties\PublishProfiles\IISProfile1.pubxml /p:Password=${{ secrets.PASSWORD }}
 
     - name: Building
       run: dotnet build
