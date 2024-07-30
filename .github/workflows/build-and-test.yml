@@ -31,7 +31,7 @@ jobs:
         Configuration: ${{ matrix.configuration }}
     - name: Execute backend unit tests
       env:
-        ConnectionStringClass:MySQL : ${{ secrets.MYSQL }}
+        ConnectionStringClass:mysql : ${{ secrets.MYSQL }}
       run: dotnet test --filter "FullyQualifiedName=TestsLibrary.Backend"
       working-directory: TestsLibrary
 
