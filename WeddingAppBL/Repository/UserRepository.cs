@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using WeddingAppDTO.Context;
 using WeddingAppDTO.DataTransferObject;
 
@@ -108,10 +109,10 @@ namespace WeddingAppBL.Repository
 
         }
 
-        public Task<bool> DeleteUserById(int userId)
+        public Task<bool> DeleteUserByPhone(string userPhone)
         {
             Context.ChangeTracker.Clear();
-            UserDto userToDelete = new UserDto { UserID = userId, UserName = null, UserPhone = null };
+            UserDto userToDelete = this.Context.Users.SingleOrDefault(x => x.UserPhone == userPhone);
             this.Context.Users.Remove(userToDelete);
             this.Context.SaveChanges();
             return Task.FromResult(true);

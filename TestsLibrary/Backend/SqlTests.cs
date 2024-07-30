@@ -18,8 +18,6 @@ namespace TestsLibrary.Backend
 
         private UserRepository userOperations;
 
-        private int maxUsersID;
-
         private WeddingAppUserContext userContext;
 
         [SetUp]
@@ -32,7 +30,7 @@ namespace TestsLibrary.Backend
                 .Build();
 
             var options = new DbContextOptionsBuilder<WeddingAppUserContext>();
-            options.UseMySQL(configuration.GetConnectionString("MySQL"));
+            options.UseSqlServer(configuration.GetConnectionString("MySQL"));
             options.EnableSensitiveDataLogging();
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
@@ -41,14 +39,6 @@ namespace TestsLibrary.Backend
             userOperations = new UserRepository(userContext);
 
             testUser = new UserDto { UserPhone = "111111111", UserName = "test user" };
-            try
-            {
-                int tmp = userOperations.GetUsers().Result.LastOrDefault().UserID;
-                this.maxUsersID = tmp;
-            }catch (Exception ex)
-            {
-                this.maxUsersID=0;
-            }
         }
 
         [TestCase(true)]
@@ -79,8 +69,8 @@ namespace TestsLibrary.Backend
         [TearDown]
         public async Task TearDownAsync()
         {
-            await this.userOperations.DeleteUserById(maxUsersID + 1);
-            await userContext.Database.ExecuteSqlAsync($"ALTER TABLE users AUTO_INCREMENT = {this.maxUsersID + 1};");
+            await this.userOperations.DeleteUserByPhone(testUser.UserPhone);
+            //await userContext.Database.ExecuteSqlAsync($"ALTER TABLE users AUTO_INCREMENT = {this.maxUsersID + 1};");
         }
 
     }
