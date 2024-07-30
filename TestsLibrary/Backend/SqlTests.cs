@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
-using WeddingApp.Helpers.SqlCommands;
-using TestsLibrary.Helpers.Entity;
 using WeddingApp.Data.Entities;
-using WeddingApp.Data.Operations;
-using WeddingApp.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using WeddingAppDTO.DataTransferObject;
+using WeddingAppBL.Repository;
+using WeddingAppDTO.Context;
 
 namespace TestsLibrary.Backend
 {
@@ -15,9 +14,9 @@ namespace TestsLibrary.Backend
         /// <summary>
         /// The test user object.
         /// </summary>
-        private UserEntity testUser;
+        private UserDto testUser;
 
-        private UserOperations userOperations;
+        private UserRepository userOperations;
 
         private int maxUsersID;
 
@@ -39,9 +38,9 @@ namespace TestsLibrary.Backend
 
             userContext = new WeddingAppUserContext(options.Options);
 
-            userOperations = new UserOperations(userContext);
+            userOperations = new UserRepository(userContext);
 
-            testUser = new UserEntity { UserPhone = "111111111", UserName = "test user" };
+            testUser = new UserDto { UserPhone = "111111111", UserName = "test user" };
             try
             {
                 int tmp = userOperations.GetUsers().Result.LastOrDefault().UserID;
@@ -55,7 +54,7 @@ namespace TestsLibrary.Backend
         [TestCase(true)]
         public void CheckProperUserInsert(bool expectedResult = true)
         {
-            List<UserEntity> tmpUserEntity = userOperations.GetUsers().Result;
+            List<UserDto> tmpUserEntity = userOperations.GetUsers().Result;
             int before = tmpUserEntity.Count;
             this.userOperations.AddUserToDatabase(testUser.UserPhone, testUser.UserName);
             tmpUserEntity = userOperations.GetUsers().Result;

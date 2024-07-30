@@ -7,13 +7,14 @@
 @using MudExtensions.Enums
 @using WeddingApp.Controllers
 @using WeddingApp.Data.Entities
+@using WeddingAppDTO.DataTransferObject
 @inject CustomAuthState CustomAuthState
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @attribute [AllowAnonymous]
 @rendermode @(new InteractiveServerRenderMode(false))
 
-<MudContainer MaxWidth="MaxWidth.Large">
+<MudContainer MaxWidth="MaxWidth.Large" Style="object-fit: contain;">
     @if (!pauseAnimation)
     {
         <MudAnimate @ref="mudAnimate"
@@ -40,12 +41,13 @@
         @if (CustomAuthState.CurrentUserEntity.UserName == string.Empty)
         {
             <MudStack Wrap="Wrap.Wrap"
-                      Class="loginClass"
+                      Class="loginClass align-content-center"
                       Spacing="12"
                       Justify="Justify.Center"
                       AlignItems="AlignItems.Center"
-                      Style="padding-top: 30%;">
+                      Style="padding-top: 10%;">
                 <Login SignIn="@SignIn" LoginMessage="@LoginMessage" MudAnimate="@mudAnimate" />
+                <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1XSll0BtKNvOkcCiFOVeVuyzfa_2kLf0&ehbc=2E312F&noprof=1" frameborder="0" style="border:0; display:block margin:0 auto;" allowfullscreen />
             </MudStack>
         }
         else
@@ -58,6 +60,14 @@
 </MudContainer>
 
 <style>
+
+    iframe, .maps {
+        width: 100vw;
+        height: 100vw;
+        max-width: 800px;
+        max-height: 600px;
+    }
+
     .centered-paper {
         display: flex;
         justify-content: center;
@@ -76,6 +86,7 @@
 </style>
 
 @code {
+
     private string backgroundPath;
     MudAnimate mudAnimate;
     private Tuple<bool, string> LoginMessage;
@@ -102,12 +113,12 @@
     private async Task LoadStateAsync()
     {
         CustomAuthState.CurrentUserClaims = new ClaimsPrincipal();
-        CustomAuthState.CurrentUserEntity = new UserEntity { UserName = null, UserPhone = null };
+        CustomAuthState.CurrentUserEntity = new UserDto { UserName = null, UserPhone = null };
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
     }
 
-    private async void SignIn(UserEntity userEntityModel)
+    private async void SignIn(UserDto userEntityModel)
     {
         pauseAnimation = true;
         LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)

@@ -2,12 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WeddingApp.Data.Entities
+namespace WeddingAppDTO.DataTransferObject
 {
     /// <summary>
     /// The picture entity.
     /// </summary>
-    public class PictureEntity
+    public class PictureDto
     {
         /// <summary>
         /// The user id.
@@ -23,7 +23,6 @@ namespace WeddingApp.Data.Entities
         /// <summary>
         /// The picture add time.
         /// </summary>
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime TimeStamp { get; set; }
+        public DateTime? TimeStamp { get; set; }
     }
 }

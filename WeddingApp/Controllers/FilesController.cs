@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using WeddingApp.Data.Entities;
-using WeddingApp.Data.Operations;
+using WeddingAppBL.Repository;
+using WeddingAppDTO.DataTransferObject;
 
 namespace WeddingApp.Controllers
 {
-    public class FilesController(PictureOperations pictureOperations)
+    public class FilesController(PictureRepository pictureOperations)
     {
         private decimal progressPercent;
         private long maxFileSize = 15728640;
@@ -14,9 +14,9 @@ namespace WeddingApp.Controllers
 
         public event Action<decimal> OnStateChange;
 
-        public event Action<List<PictureEntity>> OnPictureLoad;
+        public event Action<List<PictureDto>> OnPictureLoad;
 
-        private PictureOperations PictureOperations { get; set; } = pictureOperations;
+        private PictureRepository PictureOperations { get; set; } = pictureOperations;
 
         public async Task UploadFiles(IReadOnlyList<IBrowserFile> e, int userID)
         {
@@ -66,7 +66,7 @@ namespace WeddingApp.Controllers
             await this.PictureOperations.DeletePicture(pathToPicture);
         }
 
-        public async Task<List<PictureEntity>> LoadFiles()
+        public async Task<List<PictureDto>> LoadFiles()
         {
             return this.PictureOperations.GetAllPictures().Result;
         }

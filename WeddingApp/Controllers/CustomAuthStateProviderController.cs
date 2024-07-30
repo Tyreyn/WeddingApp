@@ -5,9 +5,7 @@
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.Authorization;
-    using Microsoft.AspNetCore.Http;
-    using WeddingApp.Data.Entities;
-    using WeddingApp.Data.Operations;
+    using WeddingAppBL.Repository;
 
     /// <summary>
     /// Cookie authentication state provider.
@@ -18,7 +16,7 @@
     public class CustomAuthStateProviderController(
         NavigationManager navigationManager,
         ILocalStorageService localStorageService,
-        UserOperations userOperations,
+        UserRepository userOperations,
         CustomAuthState customAuthState) : AuthenticationStateProvider
     {
 
@@ -31,7 +29,7 @@
 
         public CustomAuthState CustomAuthState { get; set; } = customAuthState;
 
-        public UserOperations UserOperations { get; set; } = userOperations;
+        public UserRepository UserOperations { get; set; } = userOperations;
 
         public Guid id = Guid.NewGuid();
 
@@ -77,12 +75,10 @@
                 new Claim(ClaimTypes.MobilePhone, userPhoneNumber),
             },
                 CookieAuthenticationDefaults.AuthenticationScheme);
-            //await LocalStorageService.ClearAsync();
             ClaimsPrincipal user = new ClaimsPrincipal(identity);
 
             Tuple<bool, string> loginSuccess = await
                 this.UserOperations.CheckIfUserExistsInDatabaseAndDataCorrectness(user);
-
 
             if ((loginSuccess.Item1 && loginSuccess.Item2 == string.Empty) || (!loginSuccess.Item1 && loginSuccess.Item2 != string.Empty))
             {
@@ -136,6 +132,7 @@
             {
                                     new Claim(ClaimTypes.Name, userName),
                                     new Claim(ClaimTypes.MobilePhone, userPhoneNumber),
+                                    userPhoneNumber == "admin" ? new Claim(ClaimTypes.Role, "Admin") : new Claim(ClaimTypes.Role, "User"),
             },
                 CookieAuthenticationDefaults.AuthenticationScheme);
 

@@ -1,6 +1,5 @@
 ﻿@using WeddingApp.Controllers
-@using WeddingApp.Data.Entities
-@using WeddingApp.Data.Operations
+@using WeddingAppDTO.DataTransferObject
 
 
 <MudPaper Class="d-flex align-center" Style="background-color: rgba(253,221,210,1)">
@@ -15,7 +14,7 @@
 
 @code {
     [Parameter]
-    public PictureEntity pictureEntity { get; set; }
+    public PictureDto pictureEntity { get; set; }
 
     [Parameter]
     public int CurrentUserID { get; set; }

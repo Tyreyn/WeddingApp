@@ -1,14 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using WeddingApp.Data.Entities;
+using WeddingAppDTO.DataTransferObject;
 
-namespace WeddingApp.Data.Context
+namespace WeddingAppDTO.Context
 {
     public class WeddingAppUserContext : DbContext, IWeddingAppUserContext
     {
         public WeddingAppUserContext(DbContextOptions<WeddingAppUserContext> options) : base(options) { }
 
-        public DbSet<UserEntity> Users { get; set; }
+        public DbSet<UserDto> Users { get; set; }
 
-        public DbSet<PictureEntity> Pictures { get; set; }
+        public DbSet<PictureDto> Pictures { get; set; }
     }
 }

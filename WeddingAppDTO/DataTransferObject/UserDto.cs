@@ -1,4 +1,4 @@
-﻿namespace WeddingApp.Data.Entities
+﻿namespace WeddingAppDTO.DataTransferObject
 {
     using Microsoft.EntityFrameworkCore;
     using System.ComponentModel.DataAnnotations;
@@ -7,7 +7,7 @@
     /// The user entity.
     /// </summary>
     [Index(nameof(UserPhone), IsUnique = true)]
-    public class UserEntity
+    public class UserDto
     {
 
         /// <summary>
@@ -28,6 +28,6 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Proszę podać numer telefonu")]
         public required string UserPhone { get; set; }
 
-        public ICollection<PictureEntity> Posts { get; } = new List<PictureEntity>();
+        public ICollection<PictureDto> Posts { get; } = new List<PictureDto>();
     }
 }
