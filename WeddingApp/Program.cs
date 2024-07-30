@@ -3,16 +3,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
 using MudBlazor.Services;
 using MudExtensions.Services;
+using System.Security.Claims;
 using WeddingApp.Components;
 using WeddingApp.Controllers;
-using WeddingApp.Data.Entities;
-using WeddingApp.Data.Operations;
+using WeddingAppBL.Repository;
+using WeddingAppDTO.Context;
+using WeddingAppDTO.DataTransferObject;
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddUserSecrets("ConnectionStringClass");
 
 // Add services to the container.
 builder.Services
@@ -23,23 +22,23 @@ builder.Services.AddMudExtensions();
 builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddDbContext<WeddingApp.Data.Context.WeddingAppUserContext>(options => {
-    options.UseMySQL(builder.Configuration.GetConnectionString("MySQL"));
+builder.Services.AddDbContext<WeddingAppUserContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MySQL"));
     options.EnableSensitiveDataLogging();
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
-builder.Services.AddScoped<UserOperations>();
-builder.Services.AddScoped<PictureOperations>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<PictureRepository>();
 builder.Services.AddSingleton<CustomAuthState>();
 builder.Services.AddScoped<FilesController>();
-builder.Services.AddSingleton<UserEntity>();
+builder.Services.AddSingleton<UserDto>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProviderController>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
         {
             options.Cookie.Name = "auth_token";
-            options.LoginPath = "/login";
+            options.LoginPath = "/";
             options.Cookie.MaxAge = TimeSpan.FromDays(30);
             options.SlidingExpiration = true;
             options.Cookie.SameSite = SameSiteMode.Strict;
@@ -47,7 +46,14 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             options.AccessDeniedPath = "/Forbidden/";
             options.Cookie.HttpOnly = true;
         });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsAdmin", policy =>
+    {
+        policy.RequireClaim(ClaimTypes.Role, "Admin");
+    });
+});
+
 var app = builder.Build();
 app.UseCookiePolicy();
 
@@ -59,11 +65,11 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseAuthentication();
 app.UseRouting();
 app.UseAntiforgery();
 app.UseAuthorization();
-//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions
 {

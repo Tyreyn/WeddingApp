@@ -2,3 +2,6 @@
 
 # SA1124: Do not use regions
 dotnet_diagnostic.SA1124.severity = none
+
+# IDE0065: Nieprawidłowo umieszczona dyrektywa using
+csharp_using_directive_placement = inside_namespace

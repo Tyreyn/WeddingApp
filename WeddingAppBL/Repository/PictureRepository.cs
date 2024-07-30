@@ -1,16 +1,15 @@
-﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
-using WeddingApp.Data.Context;
-using WeddingApp.Data.Entities;
-using WeddingApp.Helpers.SqlCommands;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using WeddingAppDTO.Context;
+using WeddingAppDTO.DataTransferObject;
 
-namespace WeddingApp.Data.Operations
+namespace WeddingAppBL.Repository
 {
-    public class PictureOperations
+    public class PictureRepository
     {
         private WeddingAppUserContext Context { get; set; }
 
-        public PictureOperations(WeddingAppUserContext weddingAppUserContext)
+        public PictureRepository(WeddingAppUserContext weddingAppUserContext)
         {
             this.Context = weddingAppUserContext;
         }
@@ -30,7 +29,7 @@ namespace WeddingApp.Data.Operations
         public Task<bool> AddPictureToDatabase(int userID, string pathToPicture)
         {
             Console.WriteLine("Starting adding picture to database");
-            PictureEntity pictureEntity = new PictureEntity { PicturePath = pathToPicture, UserID = userID };
+            PictureDto pictureEntity = new PictureDto { PicturePath = pathToPicture, UserID = userID, TimeStamp = DateTime.UtcNow };
             this.Context.Pictures.Add(pictureEntity);
             this.Context.SaveChanges();
             Console.WriteLine($"User: {userID} added successfully picture {pathToPicture} to database");
@@ -43,9 +42,9 @@ namespace WeddingApp.Data.Operations
         /// <returns>
         /// List of picture entities.
         /// </returns>
-        public Task<List<PictureEntity>> GetAllPictures()
+        public Task<List<PictureDto>> GetAllPictures()
         {
-            List<PictureEntity> pictureEntities = this.Context.Pictures.AsNoTracking().AsList();
+            List<PictureDto> pictureEntities = this.Context.Pictures.AsNoTracking().ToList();
             return Task.FromResult(pictureEntities);
         }
 
@@ -62,7 +61,7 @@ namespace WeddingApp.Data.Operations
         {
             Context.ChangeTracker.Clear();
             Console.WriteLine("Starting deleting picture to database");
-            PictureEntity pictureEntity = new PictureEntity { PicturePath = pathToPicture };
+            PictureDto pictureEntity = new PictureDto { PicturePath = pathToPicture };
             this.Context.Pictures.Remove(pictureEntity);
             Console.WriteLine($"{pathToPicture} deleted from database");
             this.Context.SaveChanges();

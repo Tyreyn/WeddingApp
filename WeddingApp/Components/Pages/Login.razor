@@ -1,6 +1,7 @@
 ﻿@using MudExtensions
 @using WeddingApp.Data.Entities
 @using MudExtensions.Enums
+@using WeddingAppDTO.DataTransferObject
 
 <MudAnimate @ref="MudAnimate"
             Selector=".loginMessage"
@@ -70,10 +71,10 @@
 @code {
 
     [SupplyParameterFromForm]
-    public UserEntity userEntityModel { get; set; } = new UserEntity { UserName = null, UserPhone = null};
+    public UserDto userEntityModel { get; set; } = new UserDto { UserName = null, UserPhone = null};
 
     [Parameter]
-    public EventCallback<UserEntity> SignIn { get; set; }
+    public EventCallback<UserDto> SignIn { get; set; }
 
     [Parameter]
     public Tuple<bool, string> LoginMessage { get; set; }

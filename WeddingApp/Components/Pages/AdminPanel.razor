@@ -1,0 +1,94 @@
+﻿@using WeddingApp.Controllers
+@using WeddingAppDTO.DataTransferObject
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject CustomAuthState CustomAuthState
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@page "/admin"
+
+<MudTable Items="@Users" Hover="true" Breakpoint="Breakpoint.Sm">
+    <ColGroup>
+        <col style="width:300px;" />
+        <col style="width:100px;" />
+        <col />
+        <col style="width:100px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Phone</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.userDto.UserID))">@((context.ShowDetails == true) ? "Hide" : "Show") Address Details</MudButton></MudTd>
+        <MudTd DataLabel="Id">@context.userDto.UserID</MudTd>
+            <MudTd DataLabel="Name">@context.userDto.UserName</MudTd>
+            <MudTd DataLabel="Phone">@context.userDto.UserPhone</MudTd>
+        </RowTemplate>
+
+        <ChildRowContent>
+            @if (context.ShowDetails)
+        {
+            <MudTr>
+                <td colspan="4">
+                    <MudCard Elevation="0">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">Pictures Details for <strong>@context.userDto.UserName</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent Class="pa-0">
+                            <MudTable Items="@context.userDto.Posts" Context="PicturesContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+                                <ColGroup>
+                                    <col />
+                                    <col />
+                                    <col style="width:200px;" />
+                                </ColGroup>
+                                <HeaderContent>
+                                    <MudTh>Id</MudTh>
+                                    <MudTh>Location</MudTh>
+                                    <MudTh>TimeStamp</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Id">@PicturesContext.UserID</MudTd>
+                                        <MudTd DataLabel="Location">@PicturesContext.PicturePath</MudTd>
+                                        <MudTd DataLabel="TimeStamp">@PicturesContext.TimeStamp</MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </MudCardContent>
+                        </MudCard>
+                    </td>
+                </MudTr>
+        }
+    </ChildRowContent>
+</MudTable>
+
+@code {
+
+    private static IEnumerable<User> Users { get; set; }
+
+    private class User
+    {
+        public UserDto userDto { get; set; }
+
+        public bool ShowDetails { get; set; }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadStateAsync();
+        StateHasChanged();
+    }
+
+    private async Task LoadStateAsync()
+    {
+        CustomAuthState.CurrentUserClaims = new ClaimsPrincipal();
+        CustomAuthState.CurrentUserEntity = new UserDto { UserName = null, UserPhone = null };
+        await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
+        await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
+    }
+
+    private void ShowBtnPress(int nr)
+    {
+    }
+}

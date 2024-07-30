@@ -31,4 +31,9 @@
     <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WeddingAppBL\WeddingAppBL.csproj" />
+    <ProjectReference Include="..\WeddingAppDTO\WeddingAppDTO.csproj" />
+  </ItemGroup>
+
 </Project>

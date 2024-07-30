@@ -1,14 +1,14 @@
 ﻿using System.Security.Claims;
-using WeddingApp.Data.Context;
-using WeddingApp.Data.Entities;
+using WeddingAppDTO.Context;
+using WeddingAppDTO.DataTransferObject;
 
-namespace WeddingApp.Data.Operations
+namespace WeddingAppBL.Repository
 {
-    public class UserOperations
+    public class UserRepository
     {
         private WeddingAppUserContext Context { get; set; }
 
-        public UserOperations(WeddingAppUserContext weddingAppUserContext)
+        public UserRepository(WeddingAppUserContext weddingAppUserContext)
         {
             Context = weddingAppUserContext;
         }
@@ -36,7 +36,7 @@ namespace WeddingApp.Data.Operations
             string userName = userFromCookies.Claims.First(
                 claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
 
-            UserEntity userFromDatabase = this.GetUserEntity(userPhone).Result;
+            UserDto userFromDatabase = this.GetUserEntity(userPhone).Result;
 
             if (userFromDatabase.UserName == null)
             {
@@ -57,7 +57,7 @@ namespace WeddingApp.Data.Operations
         /// <returns>
         /// List of users.
         /// </returns>
-        public async Task<List<UserEntity>> GetUsers()
+        public async Task<List<UserDto>> GetUsers()
         {
             return Task.FromResult(this.Context.Users.ToList()).Result;
         }
@@ -71,13 +71,13 @@ namespace WeddingApp.Data.Operations
         /// <returns>
         /// User Entity.
         /// </returns>
-        public async Task<UserEntity> GetUserEntity(string userPhoneNumber)
+        public async Task<UserDto> GetUserEntity(string userPhoneNumber)
         {
-            UserEntity userEntity = Context.Users.Where(user => user.UserPhone.Equals(userPhoneNumber)).FirstOrDefault();
+            UserDto userEntity = Context.Users.Where(user => user.UserPhone.Equals(userPhoneNumber)).FirstOrDefault();
 
             if (userEntity == null)
             {
-                return new UserEntity { UserName = null, UserPhone = null };
+                return new UserDto { UserName = null, UserPhone = null };
             }
             else
             {
@@ -100,7 +100,7 @@ namespace WeddingApp.Data.Operations
         public Task<bool> AddUserToDatabase(string userPhoneNumber, string userName)
         {
             Console.WriteLine("Starting adding user to database");
-            UserEntity newUserEntity = new UserEntity { UserName = userName, UserPhone = userPhoneNumber };
+            UserDto newUserEntity = new UserDto { UserName = userName, UserPhone = userPhoneNumber };
             this.Context.Users.Add(newUserEntity);
             this.Context.SaveChanges();
             Console.WriteLine($"User: {newUserEntity} added successfully to database");
@@ -111,7 +111,7 @@ namespace WeddingApp.Data.Operations
         public Task<bool> DeleteUserById(int userId)
         {
             Context.ChangeTracker.Clear();
-            UserEntity userToDelete = new UserEntity { UserID = userId, UserName = null, UserPhone = null };
+            UserDto userToDelete = new UserDto { UserID = userId, UserName = null, UserPhone = null };
             this.Context.Users.Remove(userToDelete);
             this.Context.SaveChanges();
             return Task.FromResult(true);
@@ -132,7 +132,7 @@ namespace WeddingApp.Data.Operations
         /// <returns>
         /// Empty string if everything is alright, otherwise contains information about problem.
         /// </returns>
-        private Task<string> CheckIfDataIsCorrect(UserEntity userToCheck, string userPhone, string userName)
+        private Task<string> CheckIfDataIsCorrect(UserDto userToCheck, string userPhone, string userName)
         {
             string message = string.Empty;
             if (userToCheck.UserName != userName)
