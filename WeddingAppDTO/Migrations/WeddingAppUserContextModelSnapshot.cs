@@ -22,7 +22,7 @@ namespace WeddingApp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.PictureDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.Picture", b =>
                 {
                     b.Property<string>("PicturePath")
                         .HasColumnType("nvarchar(450)");
@@ -30,20 +30,17 @@ namespace WeddingApp.Migrations
                     b.Property<DateTime?>("TimeStamp")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserDtoUserID")
-                        .HasColumnType("int");
-
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("PicturePath");
 
-                    b.HasIndex("UserDtoUserID");
+                    b.HasIndex("UserID");
 
                     b.ToTable("Pictures");
                 });
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.UserDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.User", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
@@ -67,14 +64,16 @@ namespace WeddingApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.PictureDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.Picture", b =>
                 {
-                    b.HasOne("WeddingAppDTO.DataTransferObject.UserDto", null)
+                    b.HasOne("WeddingAppDTO.DataTransferObject.User", null)
                         .WithMany("Posts")
-                        .HasForeignKey("UserDtoUserID");
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.UserDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.User", b =>
                 {
                     b.Navigation("Posts");
                 });

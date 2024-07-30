@@ -29,7 +29,7 @@ namespace WeddingAppBL.Repository
         public Task<bool> AddPictureToDatabase(int userID, string pathToPicture)
         {
             Console.WriteLine("Starting adding picture to database");
-            PictureDto pictureEntity = new PictureDto { PicturePath = pathToPicture, UserID = userID, TimeStamp = DateTime.UtcNow };
+            Picture pictureEntity = new Picture { PicturePath = pathToPicture, UserID = userID, TimeStamp = DateTime.UtcNow };
             this.Context.Pictures.Add(pictureEntity);
             this.Context.SaveChanges();
             Console.WriteLine($"User: {userID} added successfully picture {pathToPicture} to database");
@@ -42,9 +42,9 @@ namespace WeddingAppBL.Repository
         /// <returns>
         /// List of picture entities.
         /// </returns>
-        public Task<List<PictureDto>> GetAllPictures()
+        public Task<List<Picture>> GetAllPictures()
         {
-            List<PictureDto> pictureEntities = this.Context.Pictures.AsNoTracking().ToList();
+            List<Picture> pictureEntities = this.Context.Pictures.AsNoTracking().ToList();
             return Task.FromResult(pictureEntities);
         }
 
@@ -61,7 +61,7 @@ namespace WeddingAppBL.Repository
         {
             Context.ChangeTracker.Clear();
             Console.WriteLine("Starting deleting picture to database");
-            PictureDto pictureEntity = new PictureDto { PicturePath = pathToPicture };
+            Picture pictureEntity = new Picture { PicturePath = pathToPicture };
             this.Context.Pictures.Remove(pictureEntity);
             Console.WriteLine($"{pathToPicture} deleted from database");
             this.Context.SaveChanges();

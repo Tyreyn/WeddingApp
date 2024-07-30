@@ -37,7 +37,7 @@
 
 
 <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="1" Justify="Justify.Center" AlignItems="AlignItems.Center">
-    @foreach (PictureDto picture in pictures)
+    @foreach (WeddingAppDTO.DataTransferObject.Picture picture in pictures)
     {
         <Picture pictureEntity="picture" CurrentUserID="CustomAuthState.CurrentUserEntity.UserID" DeletePicture="@DeletePicture" />
     }
@@ -55,7 +55,7 @@
 
 
 @code {
-    public List<PictureDto> pictures = new();
+    public List<WeddingAppDTO.DataTransferObject.Picture> pictures = new();
     MudGallery? _gallery;
     private bool isLoading;
     private bool shouldRender;

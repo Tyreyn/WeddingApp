@@ -113,12 +113,12 @@
     private async Task LoadStateAsync()
     {
         CustomAuthState.CurrentUserClaims = new ClaimsPrincipal();
-        CustomAuthState.CurrentUserEntity = new UserDto { UserName = null, UserPhone = null };
+        CustomAuthState.CurrentUserEntity = new User { UserName = null, UserPhone = null };
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetCurrentUserAsync();
         await ((CustomAuthStateProviderController)AuthenticationStateProvider).GetAuthenticationStateAsync();
     }
 
-    private async void SignIn(UserDto userEntityModel)
+    private async void SignIn(User userEntityModel)
     {
         pauseAnimation = true;
         LoginMessage = await ((CustomAuthStateProviderController)AuthenticationStateProvider)

@@ -46,7 +46,7 @@ namespace WeddingApp.Migrations
                     b.ToTable("Pictures");
                 });
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.UserDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.User", b =>
                 {
                     b.Property<int>("UserID")
                         .ValueGeneratedOnAdd()
@@ -72,12 +72,12 @@ namespace WeddingApp.Migrations
 
             modelBuilder.Entity("WeddingAppDTO.DataTransferObject.PictureDto", b =>
                 {
-                    b.HasOne("WeddingAppDTO.DataTransferObject.UserDto", null)
+                    b.HasOne("WeddingAppDTO.DataTransferObject.User", null)
                         .WithMany("Posts")
                         .HasForeignKey("UserDtoUserID");
                 });
 
-            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.UserDto", b =>
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.User", b =>
                 {
                     b.Navigation("Posts");
                 });

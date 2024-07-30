@@ -13,7 +13,7 @@
         /// <summary>
         /// Gets or sets current user entity.
         /// </summary>
-        public UserDto CurrentUserEntity { get; set; } = new UserDto { UserName = null, UserPhone = null};
+        public User CurrentUserEntity { get; set; } = new User { UserName = null, UserPhone = null};
 
     }
 }

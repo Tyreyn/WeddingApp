@@ -7,7 +7,7 @@
     /// The user entity.
     /// </summary>
     [Index(nameof(UserPhone), IsUnique = true)]
-    public class UserDto
+    public class User
     {
 
         /// <summary>
@@ -28,6 +28,6 @@
         [Required(AllowEmptyStrings = false, ErrorMessage = "Proszę podać numer telefonu")]
         public required string UserPhone { get; set; }
 
-        public ICollection<PictureDto> Posts { get; } = new List<PictureDto>();
+        public ICollection<Picture> Posts { get; } = new List<Picture>();
     }
 }

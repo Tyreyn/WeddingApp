@@ -5,7 +5,7 @@ namespace WeddingAppDTO.Context
 {
     public interface IWeddingAppUserContext
     {
-        DbSet<PictureDto> Pictures { get; set; }
-        DbSet<UserDto> Users { get; set; }
+        DbSet<Picture> Pictures { get; set; }
+        DbSet<User> Users { get; set; }
     }
 }
