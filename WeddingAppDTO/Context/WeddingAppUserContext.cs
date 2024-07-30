@@ -7,8 +7,8 @@ namespace WeddingAppDTO.Context
     {
         public WeddingAppUserContext(DbContextOptions<WeddingAppUserContext> options) : base(options) { }
 
-        public DbSet<UserDto> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 
-        public DbSet<PictureDto> Pictures { get; set; }
+        public DbSet<Picture> Pictures { get; set; }
     }
 }

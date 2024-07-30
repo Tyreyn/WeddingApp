@@ -37,7 +37,7 @@ namespace WeddingAppBL.Repository
             string userName = userFromCookies.Claims.First(
                 claim => claim.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").Value;
 
-            UserDto userFromDatabase = this.GetUserEntity(userPhone).Result;
+            User userFromDatabase = this.GetUserEntity(userPhone).Result;
 
             if (userFromDatabase.UserName == null)
             {
@@ -58,7 +58,7 @@ namespace WeddingAppBL.Repository
         /// <returns>
         /// List of users.
         /// </returns>
-        public async Task<List<UserDto>> GetUsers()
+        public async Task<List<User>> GetUsers()
         {
             return Task.FromResult(this.Context.Users.ToList()).Result;
         }
@@ -72,13 +72,13 @@ namespace WeddingAppBL.Repository
         /// <returns>
         /// User Entity.
         /// </returns>
-        public async Task<UserDto> GetUserEntity(string userPhoneNumber)
+        public async Task<User> GetUserEntity(string userPhoneNumber)
         {
-            UserDto userEntity = Context.Users.Where(user => user.UserPhone.Equals(userPhoneNumber)).FirstOrDefault();
+            User userEntity = Context.Users.Where(user => user.UserPhone.Equals(userPhoneNumber)).FirstOrDefault();
 
             if (userEntity == null)
             {
-                return new UserDto { UserName = null, UserPhone = null };
+                return new User { UserName = null, UserPhone = null };
             }
             else
             {
@@ -101,7 +101,7 @@ namespace WeddingAppBL.Repository
         public Task<bool> AddUserToDatabase(string userPhoneNumber, string userName)
         {
             Console.WriteLine("Starting adding user to database");
-            UserDto newUserEntity = new UserDto { UserName = userName, UserPhone = userPhoneNumber };
+            User newUserEntity = new User { UserName = userName, UserPhone = userPhoneNumber };
             this.Context.Users.Add(newUserEntity);
             this.Context.SaveChanges();
             Console.WriteLine($"User: {newUserEntity} added successfully to database");
@@ -112,7 +112,7 @@ namespace WeddingAppBL.Repository
         public Task<bool> DeleteUserByPhone(string userPhone)
         {
             Context.ChangeTracker.Clear();
-            UserDto userToDelete = this.Context.Users.SingleOrDefault(x => x.UserPhone == userPhone);
+            User userToDelete = this.Context.Users.SingleOrDefault(x => x.UserPhone == userPhone);
             this.Context.Users.Remove(userToDelete);
             this.Context.SaveChanges();
             return Task.FromResult(true);
@@ -133,7 +133,7 @@ namespace WeddingAppBL.Repository
         /// <returns>
         /// Empty string if everything is alright, otherwise contains information about problem.
         /// </returns>
-        private Task<string> CheckIfDataIsCorrect(UserDto userToCheck, string userPhone, string userName)
+        private Task<string> CheckIfDataIsCorrect(User userToCheck, string userPhone, string userName)
         {
             string message = string.Empty;
             if (userToCheck.UserName != userName)

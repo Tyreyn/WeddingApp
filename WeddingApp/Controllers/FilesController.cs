@@ -14,7 +14,7 @@ namespace WeddingApp.Controllers
 
         public event Action<decimal> OnStateChange;
 
-        public event Action<List<PictureDto>> OnPictureLoad;
+        public event Action<List<Picture>> OnPictureLoad;
 
         private PictureRepository PictureOperations { get; set; } = pictureOperations;
 
@@ -66,7 +66,7 @@ namespace WeddingApp.Controllers
             await this.PictureOperations.DeletePicture(pathToPicture);
         }
 
-        public async Task<List<PictureDto>> LoadFiles()
+        public async Task<List<Picture>> LoadFiles()
         {
             return this.PictureOperations.GetAllPictures().Result;
         }

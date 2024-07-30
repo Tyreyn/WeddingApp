@@ -32,7 +32,7 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<PictureRepository>();
 builder.Services.AddSingleton<CustomAuthState>();
 builder.Services.AddScoped<FilesController>();
-builder.Services.AddSingleton<UserDto>();
+builder.Services.AddSingleton<User>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProviderController>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>

@@ -71,10 +71,10 @@
 @code {
 
     [SupplyParameterFromForm]
-    public UserDto userEntityModel { get; set; } = new UserDto { UserName = null, UserPhone = null};
+    public User userEntityModel { get; set; } = new User { UserName = null, UserPhone = null};
 
     [Parameter]
-    public EventCallback<UserDto> SignIn { get; set; }
+    public EventCallback<User> SignIn { get; set; }
 
     [Parameter]
     public Tuple<bool, string> LoginMessage { get; set; }

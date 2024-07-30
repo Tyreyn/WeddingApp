@@ -7,7 +7,7 @@ namespace WeddingAppDTO.DataTransferObject
     /// <summary>
     /// The picture entity.
     /// </summary>
-    public class PictureDto
+    public class Picture
     {
         /// <summary>
         /// The user id.

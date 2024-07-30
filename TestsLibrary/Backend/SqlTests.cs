@@ -14,7 +14,7 @@ namespace TestsLibrary.Backend
         /// <summary>
         /// The test user object.
         /// </summary>
-        private UserDto testUser;
+        private User testUser;
 
         private UserRepository userOperations;
 
@@ -38,13 +38,13 @@ namespace TestsLibrary.Backend
 
             userOperations = new UserRepository(userContext);
 
-            testUser = new UserDto { UserPhone = "111111111", UserName = "test user" };
+            testUser = new User { UserPhone = "111111111", UserName = "test user" };
         }
 
         [TestCase(true)]
         public void CheckProperUserInsert(bool expectedResult = true)
         {
-            List<UserDto> tmpUserEntity = userOperations.GetUsers().Result;
+            List<User> tmpUserEntity = userOperations.GetUsers().Result;
             int before = tmpUserEntity.Count;
             this.userOperations.AddUserToDatabase(testUser.UserPhone, testUser.UserName);
             tmpUserEntity = userOperations.GetUsers().Result;
