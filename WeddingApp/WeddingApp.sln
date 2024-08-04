@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsLibrary", "..\TestsLib
 		{24CD7B21-1105-477C-AC2D-0B5F555FF69B} = {24CD7B21-1105-477C-AC2D-0B5F555FF69B}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeddingAppDTO", "..\WeddingAppDTO\WeddingAppDTO.csproj", "{491BCBDF-AE6B-474D-A189-04F2E28AB509}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeddingAppDTO", "..\WeddingAppDTO\WeddingAppDTO.csproj", "{491BCBDF-AE6B-474D-A189-04F2E28AB509}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeddingAppBL", "..\WeddingAppBL\WeddingAppBL.csproj", "{8FF85C16-92FA-4997-9639-73D26F310A6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeddingAppBL", "..\WeddingAppBL\WeddingAppBL.csproj", "{8FF85C16-92FA-4997-9639-73D26F310A6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

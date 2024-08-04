@@ -7,5 +7,6 @@ namespace WeddingAppDTO.Context
     {
         DbSet<Picture> Pictures { get; set; }
         DbSet<User> Users { get; set; }
+        DbSet<PlannerComment> PlannerComments { get; set; }
     }
 }

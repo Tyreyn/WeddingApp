@@ -60,7 +60,7 @@ namespace WeddingAppBL.Repository
         /// </returns>
         public async Task<List<User>> GetUsers()
         {
-            return Task.FromResult(this.Context.Users.ToList()).Result;
+            return Task.FromResult(this.Context.Users.Include(u => u.Posts).ToList()).Result;
         }
 
         /// <summary>

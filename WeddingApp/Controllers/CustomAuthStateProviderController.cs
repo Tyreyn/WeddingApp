@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Components;
     using Microsoft.AspNetCore.Components.Authorization;
     using WeddingAppBL.Repository;
+    using WeddingAppDTO.DataTransferObject;
 
     /// <summary>
     /// Cookie authentication state provider.
@@ -71,8 +72,9 @@
             ClaimsIdentity identity = new ClaimsIdentity(
                 new[]
             {
-                new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.MobilePhone, userPhoneNumber),
+                                    new Claim(ClaimTypes.Name, userName),
+                                    new Claim(ClaimTypes.MobilePhone, userPhoneNumber),
+                                    userPhoneNumber == "admin" ? new Claim(ClaimTypes.Role, "Admin") : new Claim(ClaimTypes.Role, "User"),
             },
                 CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal user = new ClaimsPrincipal(identity);
@@ -99,6 +101,14 @@
 
             return loginSuccess;
 
+        }
+
+        public async Task SignOut()
+        {
+            await this.LocalStorageService.RemoveItemAsync("AuthTokenName");
+            await this.LocalStorageService.RemoveItemAsync("AuthTokenPhoneNumber");
+            this.CustomAuthState.CurrentUserClaims = new ClaimsPrincipal();
+            this.CustomAuthState.CurrentUserEntity = new User { UserName = null, UserPhone = null };
         }
 
         /// <summary>

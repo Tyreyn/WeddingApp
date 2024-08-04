@@ -1,0 +1,90 @@
+﻿@using WeddingApp.Data.Entities
+@using WeddingAppBL.Repository
+@using WeddingAppDTO.DataTransferObject
+@inject UserRepository UserRepository
+<h3>UserTable</h3>
+
+<MudTable Items="@Users" Hover="true" Breakpoint="Breakpoint.Sm">
+    <ColGroup>
+        <col style="width:300px;" />
+        <col style="width:100px;" />
+        <col />
+        <col style="width:100px;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh></MudTh>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Phone</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.userDto.UserID))">@((context.ShowDetails == true) ? "Hide" : "Show") Address Details</MudButton></MudTd>
+        <MudTd DataLabel="Id">@context.userDto.UserID</MudTd>
+            <MudTd DataLabel="Name">@context.userDto.UserName</MudTd>
+            <MudTd DataLabel="Phone">@context.userDto.UserPhone</MudTd>
+        </RowTemplate>
+
+        <ChildRowContent>
+            @if (context.ShowDetails)
+        {
+            <MudTr>
+                <td colspan="4">
+                    <MudCard Elevation="0">
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">Pictures Details for <strong>@context.userDto.UserName</strong></MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent Class="pa-0">
+                            <MudTable Items="@context.userDto.Posts" Context="PicturesContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+                                <ColGroup>
+                                    <col />
+                                    <col />
+                                    <col style="width:200px;" />
+                                </ColGroup>
+                                <HeaderContent>
+                                    <MudTh>Id</MudTh>
+                                    <MudTh>Image</MudTh>
+                                    <MudTh>TimeStamp</MudTh>
+                                </HeaderContent>
+                                <RowTemplate>
+                                    <MudTd DataLabel="Id">@PicturesContext.UserID</MudTd>
+                                        <MudTd DataLabel="Location">
+                                            <MudImage Src="@PicturesContext.PicturePath" ObjectFit="ObjectFit.ScaleDown" Elevation="25" Class="rounded-lg ma-4" Fluid="true" />                                            </MudTd>
+                                        <MudTd DataLabel="TimeStamp">@PicturesContext.TimeStamp</MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+                            </MudCardContent>
+                        </MudCard>
+                    </td>
+                </MudTr>
+        }
+    </ChildRowContent>
+</MudTable>
+
+
+@code {
+
+    public static IEnumerable<UserTableClass> Users { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<User> tmpUsers = await UserRepository.GetUsers();
+        List<UserTableClass> tmpTableClass = new List<UserTableClass>();
+        foreach(User user in tmpUsers)
+        {
+            tmpTableClass.Add(new UserTableClass { userDto = user });
+        }
+        if(tmpTableClass != null)
+        {
+            Users = tmpTableClass.AsEnumerable();
+        }
+    }
+
+
+    private void ShowBtnPress(int userId)
+    {
+        UserTableClass tmpUserTableClass = Users.Where(x => x.userDto.UserID == userId).FirstOrDefault();
+        tmpUserTableClass.ShowDetails = !tmpUserTableClass.ShowDetails;
+    }
+}

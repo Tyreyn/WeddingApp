@@ -10,5 +10,7 @@ namespace WeddingAppDTO.Context
         public DbSet<User> Users { get; set; }
 
         public DbSet<Picture> Pictures { get; set; }
+
+        public DbSet<PlannerComment> PlannerComments { get; set; }
     }
 }

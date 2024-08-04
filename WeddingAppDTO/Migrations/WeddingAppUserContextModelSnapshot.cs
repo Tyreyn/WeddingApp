@@ -40,6 +40,26 @@ namespace WeddingApp.Migrations
                     b.ToTable("Pictures");
                 });
 
+            modelBuilder.Entity("WeddingAppDTO.DataTransferObject.PlannerComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PlannerComments");
+                });
+
             modelBuilder.Entity("WeddingAppDTO.DataTransferObject.User", b =>
                 {
                     b.Property<int>("UserID")
