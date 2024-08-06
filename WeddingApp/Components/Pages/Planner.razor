@@ -1,7 +1,38 @@
-﻿<h3>Planner</h3>
+﻿@using WeddingAppBL.Repository
+@using WeddingAppDTO.DataTransferObject
+@using System.ComponentModel.DataAnnotations
+@inject PlannerRepository PlannerRepository
+<h3>Planner</h3>
+
+
+<EditForm Model="@plannerCommentForm" OnValidSubmit="OnValidSubmit" style="width:100vw">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTimePicker Label="24 hours (editable)" Editable="true" @bind-Time="time" />
+                    <MudTextField AutoGrow Label="Comment" HelperText="chuj, dupa, cycki" @bind-Value="plannerCommentForm.Comment" For="@(() => plannerCommentForm.Comment)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
 
 @code {
 
-    [Parameter]
-    public bool isAdmin { get; set; }
+    public PlannerComment plannerCommentForm = new PlannerComment { Comment = null, DateTime = new TimeSpan(0,0,0)};
+
+    private TimeSpan? time = new TimeSpan(00, 00, 00);
+
+    private void OnValidSubmit(EditContext context)
+    {
+        PlannerRepository.AddNewComment((TimeSpan)time, plannerCommentForm.Comment);
+        plannerCommentForm = new PlannerComment { Comment = null, DateTime = new TimeSpan(0, 0, 0) };
+        time = new TimeSpan(00, 00, 00);
+        StateHasChanged();
+    }
 }

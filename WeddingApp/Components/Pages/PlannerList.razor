@@ -1,0 +1,104 @@
+﻿@using WeddingAppBL.Repository
+@using WeddingAppDTO.DataTransferObject
+@inject PlannerRepository PlannerRepository
+@rendermode @(new InteractiveServerRenderMode(true))
+
+<MudTable @ref="_table" Items="@Comments" CanCancelEdit="true" ReadOnly="@IsAdmin" style="width:100vw"
+          @bind-SelectedItem="selectedItem1" CommitEditTooltip="Commit Edit" HorizontalScrollbar="true"
+          RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues" Height="350px" Breakpoint="Breakpoint.Sm" FixedHeader="true"
+          RowEditCommit="ItemHasBeenCommitted" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Plan Wesela</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width: 10px;" />
+        <col/>
+        <col/>
+        <col />
+        <col />
+        @if (applyButtonPosition.DisplayApplyButtonAtEnd() || (editButtonPosition.DisplayEditButtonAtEnd() && editTrigger == TableEditTrigger.EditButton))
+        {
+            <col style="width:50px;" />
+        }
+    </ColGroup>
+
+    <RowTemplate>
+        <MudTd DataLabel="Godzina">@context.DateTime</MudTd>
+            <MudTd Style="overflow-wrap:anywhere; width:100vw">@context.Comment</MudTd>
+        </RowTemplate>
+
+        <RowEditingTemplate>
+            <MudTd DataLabel="Godzina">
+                <MudTextField @bind-Value="context.DateTime" InputType="InputType.Time" Format="HH:MM" Required />
+         </MudTd>
+         <MudTd DataLabel="Opis">
+             <MudTextField AutoGrow Style="overflow-wrap:anywhere; width:100vw" @bind-Value="context.Comment" Required />
+         </MudTd>
+         <MudTd DataLabel="">
+             <MudIconButton OnClick="@((e) => DeleteUser(@context.Id))" Icon="@Icons.Material.Filled.Delete"/>
+         </MudTd>
+     </RowEditingTemplate>
+
+     <EditButtonContent Context="button">
+         <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="@button.ButtonDisabled" />
+     </EditButtonContent>
+
+ </MudTable>
+
+ <style>
+</style>
+
+ @code {
+
+    [Parameter]
+    public bool IsAdmin { get; set; }
+
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger editTrigger = TableEditTrigger.EditButton;
+    private PlannerComment elementBeforeEdit;
+    private PlannerComment selectedItem1 = null;
+
+    private IEnumerable<PlannerComment> Comments = new List<PlannerComment>();
+
+    private void BackupItem(object element)
+    {
+        elementBeforeEdit = new()
+            {
+                DateTime = ((PlannerComment)element).DateTime,
+                Comment = ((PlannerComment)element).Comment,
+            };
+    }
+
+    private void ItemHasBeenCommitted(object element)
+    {
+        PlannerRepository.EditComment((PlannerComment)element);
+        Comments = PlannerRepository.GetPlannerComments().Result.OrderBy(comment => comment.DateTime);
+        StateHasChanged();
+    }
+
+    private void ResetItemToOriginalValues(object element)
+    {
+        ((PlannerComment)element).DateTime = elementBeforeEdit.DateTime;
+        ((PlannerComment)element).Comment = elementBeforeEdit.Comment;
+    }
+
+    private void DeleteUser(int id)
+    {
+        PlannerRepository.DeleteComment(id);
+        _table?.SetEditingItem(null);
+        Comments = PlannerRepository.GetPlannerComments().Result.OrderBy(comment => comment.DateTime);
+        StateHasChanged();
+    }
+
+    private MudTable<PlannerComment>? _table;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.IsAdmin = !this.IsAdmin;
+        _table?.SetEditingItem(null);
+        Comments = PlannerRepository.GetPlannerComments().Result.OrderBy(comment => comment.DateTime);
+    }
+
+}

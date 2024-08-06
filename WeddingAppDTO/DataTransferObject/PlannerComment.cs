@@ -13,7 +13,7 @@ namespace WeddingAppDTO.DataTransferObject
         public int Id { get; set; }
 
         [Required]
-        public DateTime DateTime { get; set; }
+        public TimeSpan DateTime { get; set; }
 
         [Required]
         public required string Comment { get; set; }

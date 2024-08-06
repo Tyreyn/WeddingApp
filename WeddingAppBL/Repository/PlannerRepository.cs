@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeddingAppDTO.Context;
+﻿using WeddingAppDTO.Context;
 using WeddingAppDTO.DataTransferObject;
 
 namespace WeddingAppBL.Repository
@@ -18,13 +12,14 @@ namespace WeddingAppBL.Repository
             this.Context = weddingAppUserContext;
         }
 
-        public Task<bool> AddNewComment(DateTime dateTimeStamp, string comment)
+        public Task<bool> AddNewComment(TimeSpan dateTimeStamp, string comment)
         {
             this.Context.PlannerComments.Add(new PlannerComment
             {
                 DateTime = dateTimeStamp,
                 Comment = comment
             });
+            this.Context.SaveChanges();
             return Task.FromResult(true);
         }
 
@@ -35,14 +30,18 @@ namespace WeddingAppBL.Repository
 
         public Task<bool> DeleteComment(int commentId)
         {
+            this.Context.ChangeTracker.Clear();
             PlannerComment tmpComment = this.Context.PlannerComments.FirstOrDefault(x => x.Id == commentId);
             this.Context.PlannerComments.Remove(tmpComment);
+            this.Context.SaveChanges();
             return Task.FromResult(true);
         }
 
         public Task<bool> EditComment(PlannerComment plannerComment)
         {
+            this.Context.ChangeTracker.Clear();
             this.Context.PlannerComments.Update(plannerComment);
+            this.Context.SaveChanges();
             return Task.FromResult(true);
         }
     }

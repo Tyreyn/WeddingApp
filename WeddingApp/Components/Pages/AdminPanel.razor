@@ -31,12 +31,22 @@
         }
         else
         {
-            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                <UserTable />
-            </MudPaper>
-            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                <Planner />
-            </MudPaper>
+            <MudStack Wrap="Wrap.Wrap"
+                      Class="loginClass align-content-center"
+                      Spacing="12"
+                      Justify="Justify.Center"
+                      AlignItems="AlignItems.Center"
+                      Style="padding-top: 10%;">
+                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                    <UserTable />
+                </MudPaper>
+                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                    <Planner />
+                </MudPaper>
+                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                    <PlannerList IsAdmin="true" />
+                </MudPaper>
+            </MudStack>
         }
     }
 </MudContainer>
