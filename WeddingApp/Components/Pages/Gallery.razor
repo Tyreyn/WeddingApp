@@ -33,6 +33,15 @@
             </MudText>
         </MudProgressLinear>
     }
+    <MudSpacer />
+    <MudButton HtmlTag="label"
+               Variant="Variant.Filled"
+               Class="deeporange accent-3 mud-elevation-25 rounded"
+               Style="color: rgba(85,65,50,0.9)"
+               EndIcon="@Icons.Material.Filled.Info"
+               @onclick="ChangeComponent">
+        Plan wesela
+    </MudButton>
 </MudAppBar>
 
 
@@ -63,6 +72,9 @@
     private decimal progressPercent;
     public string uploadDirectory;
     public string statusMessage;
+
+    [Parameter]
+    public EventCallback<int> OnCoponentChange { get; set; }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -98,5 +110,10 @@
         await FilesController.DeletePicture(pathToPicture);
         pictures = FilesController.LoadFiles().Result;
         StateHasChanged();
+    }
+
+    private async Task ChangeComponent()
+    {
+        await OnCoponentChange.InvokeAsync(1);
     }
 }

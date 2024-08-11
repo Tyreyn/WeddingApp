@@ -1,0 +1,24 @@
+﻿<MudAppBar Style="background-image: radial-gradient(circle, rgba(255, 213, 211, 1) 0%, rgba(255, 177, 151, 1) 29%, rgba(252, 166, 141, 0.8) 58%, rgba(255, 220, 211, 1) 100%); background-color:transparent"
+           Class="deeporange lighten-4">
+    <MudButton HtmlTag="label"
+               Variant="Variant.Filled"
+               Class="deeporange accent-3 mud-elevation-25 rounded"
+               Style="color: rgba(85,65,50,0.9)"
+               EndIcon="@Icons.Material.Filled.Camera"
+               @onclick="ChangeComponent">
+        Galeria zdjęć
+    </MudButton>
+</MudAppBar>
+
+<PlannerList IsAdmin=false/>
+
+@code {
+
+    [Parameter]
+    public EventCallback<int> OnCoponentChange { get; set; }
+
+    private async Task ChangeComponent()
+    {
+        await OnCoponentChange.InvokeAsync(0);
+    }
+}

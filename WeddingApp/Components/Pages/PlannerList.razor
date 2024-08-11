@@ -24,16 +24,16 @@
     </ColGroup>
 
     <RowTemplate>
-        <MudTd DataLabel="Godzina">@context.DateTime</MudTd>
-            <MudTd Style="overflow-wrap:anywhere; width:100vw">@context.Comment</MudTd>
+        <MudTd DataLabel="Godzina">@context.DateTime.Hours:@(context.DateTime.Minutes == 0 ? "00" : @context.DateTime.Minutes)</MudTd>
+            <MudTd Style="overflow-wrap:anywhere">@context.Comment</MudTd>
         </RowTemplate>
 
         <RowEditingTemplate>
             <MudTd DataLabel="Godzina">
-                <MudTextField @bind-Value="context.DateTime" InputType="InputType.Time" Format="HH:MM" Required />
+                <MudTextField @bind-Value="context.DateTime" InputType="InputType.DateTimeLocal" Required />
          </MudTd>
          <MudTd DataLabel="Opis">
-             <MudTextField AutoGrow Style="overflow-wrap:anywhere; width:100vw" @bind-Value="context.Comment" Required />
+             <MudTextField AutoGrow Style="overflow-wrap:anywhere" @bind-Value="context.Comment" Required />
          </MudTd>
          <MudTd DataLabel="">
              <MudIconButton OnClick="@((e) => DeleteUser(@context.Id))" Icon="@Icons.Material.Filled.Delete"/>
@@ -59,7 +59,7 @@
     private TableEditTrigger editTrigger = TableEditTrigger.EditButton;
     private PlannerComment elementBeforeEdit;
     private PlannerComment selectedItem1 = null;
-
+    private TimeSpan? time = new TimeSpan(11,11,2024,00, 00, 00);
     private IEnumerable<PlannerComment> Comments = new List<PlannerComment>();
 
     private void BackupItem(object element)
@@ -98,7 +98,11 @@
     {
         this.IsAdmin = !this.IsAdmin;
         _table?.SetEditingItem(null);
-        Comments = PlannerRepository.GetPlannerComments().Result.OrderBy(comment => comment.DateTime);
+        List<PlannerComment> tmpList = PlannerRepository.GetPlannerComments().Result.OrderBy(comment => comment.DateTime).ToList();
+        List<PlannerComment> nextDayList = tmpList.Where(comment => comment.DateTime < new TimeSpan(15, 00, 00)).ToList();
+        tmpList.RemoveRange(0, nextDayList.Count);
+        tmpList.AddRange(nextDayList);
+        Comments = tmpList;
     }
 
 }

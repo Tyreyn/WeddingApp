@@ -52,9 +52,21 @@
         }
         else
         {
-            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                <Gallery />
-            </MudPaper>
+            switch (componentId)
+            {
+                case 0:
+                default:
+                    <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                        <Gallery OnCoponentChange="ComponentChanged" />
+                    </MudPaper>
+                    break;
+
+                case 1:
+                    <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                        <InformationPanel OnCoponentChange="ComponentChanged" />
+                    </MudPaper>
+                    break;
+            }
         }
     }
 </MudContainer>
@@ -86,12 +98,13 @@
 </style>
 
 @code {
-
+    public int componentId = 0;
     private string backgroundPath;
     MudAnimate mudAnimate;
     private Tuple<bool, string> LoginMessage;
     public bool connection;
     private bool pauseAnimation = false;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadStateAsync();
@@ -143,5 +156,10 @@
             backgroundPath = newBackgroundPath;
             StateHasChanged();
         }
+    }
+
+    private async Task ComponentChanged(int Id)
+    {
+        componentId = Id;
     }
 }
