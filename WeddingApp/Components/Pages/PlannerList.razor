@@ -13,7 +13,7 @@
     </ToolBarContent>
     <ColGroup>
         <col style="width: 90vw;" />
-        @if (applyButtonPosition.DisplayApplyButtonAtEnd() || (editButtonPosition.DisplayEditButtonAtEnd() && editTrigger == TableEditTrigger.EditButton))
+        @if (!IsAdmin)
         {
             <col style="width:50px;" />
         }
@@ -28,10 +28,10 @@
 
         <RowEditingTemplate>
             <MudTd DataLabel="Godzina">
-                <MudTextField @bind-Value="context.DateTime" InputType="InputType.Time" Required />
+                <MudTextField Style="width:20vw" @bind-Value="context.DateTime" InputType="InputType.Time" Required />
          </MudTd>
          <MudTd DataLabel="Opis">
-             <MudTextField AutoGrow Style="overflow-wrap:anywhere" @bind-Value="context.Comment" Required />
+             <MudTextField AutoGrow Style="overflow-wrap:anywhere; width:20vw" @bind-Value="context.Comment" Required />
          </MudTd>
          <MudTd DataLabel="">
              <MudIconButton OnClick="@((e) => DeleteUser(@context.Id))" Icon="@Icons.Material.Filled.Delete" />

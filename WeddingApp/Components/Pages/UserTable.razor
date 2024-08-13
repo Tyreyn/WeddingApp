@@ -2,9 +2,10 @@
 @using WeddingAppBL.Repository
 @using WeddingAppDTO.DataTransferObject
 @inject UserRepository UserRepository
+@inject PictureRepository PictureRepository
 <h3>UserTable</h3>
 
-<MudTable Items="@Users" Hover="true" Breakpoint="Breakpoint.Sm" style="width:100vw">
+<MudTable Items="@Users" Hover="true" Breakpoint="Breakpoint.Sm">
     <ColGroup>
         <col style="width:300px;" />
         <col style="width:100px;" />
@@ -19,9 +20,12 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd><MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => ShowBtnPress(context.userDto.UserID))">@((context.ShowDetails == true) ? "Hide" : "Show") Address Details</MudButton></MudTd>
-        <MudTd DataLabel="Id">@context.userDto.UserID</MudTd>
+        <MudTd style="width:90vw"  DataLabel="Id">@context.userDto.UserID</MudTd>
             <MudTd DataLabel="Name">@context.userDto.UserName</MudTd>
             <MudTd DataLabel="Phone">@context.userDto.UserPhone</MudTd>
+            <MudTd DataLabel="">
+                <MudIconButton OnClick="@((e) => DeleteUser(@context.userDto.UserPhone))" Icon="@Icons.Material.Filled.Delete" />
+            </MudTd>
         </RowTemplate>
 
         <ChildRowContent>
@@ -52,6 +56,9 @@
                                         <MudTd DataLabel="Location">
                                             <MudImage Src="@PicturesContext.PicturePath" ObjectFit="ObjectFit.ScaleDown" Elevation="25" Class="rounded-lg ma-4" Fluid="true" />                                            </MudTd>
                                         <MudTd DataLabel="TimeStamp">@PicturesContext.TimeStamp</MudTd>
+                                        <MudTd DataLabel="">
+                                            <MudIconButton OnClick="@((e) => DeletePicture(@PicturesContext.PicturePath))" Icon="@Icons.Material.Filled.Delete" />
+                                        </MudTd>
                                     </RowTemplate>
                                 </MudTable>
                             </MudCardContent>
@@ -81,6 +88,35 @@
         }
     }
 
+    private async Task DeletePicture(string pathToPicture)
+    {
+        await PictureRepository.DeletePicture(pathToPicture);
+        List<User> tmpUsers = await UserRepository.GetUsers();
+        List<UserTableClass> tmpTableClass = new List<UserTableClass>();
+        foreach (User user in tmpUsers)
+        {
+            tmpTableClass.Add(new UserTableClass { userDto = user });
+        }
+        if (tmpTableClass != null)
+        {
+            Users = tmpTableClass.AsEnumerable();
+        }
+    }
+
+    private async Task DeleteUser(string userPhone)
+    {
+        UserRepository.DeleteUserByPhone(userPhone);
+        List<User> tmpUsers = await UserRepository.GetUsers();
+        List<UserTableClass> tmpTableClass = new List<UserTableClass>();
+        foreach (User user in tmpUsers)
+        {
+            tmpTableClass.Add(new UserTableClass { userDto = user });
+        }
+        if (tmpTableClass != null)
+        {
+            Users = tmpTableClass.AsEnumerable();
+        }
+    }
 
     private void ShowBtnPress(int userId)
     {

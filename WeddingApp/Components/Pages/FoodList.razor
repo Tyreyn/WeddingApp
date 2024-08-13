@@ -3,57 +3,74 @@
 @using WeddingAppDTO.DataTransferObject
 @inject FoodRepository FoodRepository
 
-<MudTable Items="@Foods" Hover="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" Height="40vh" Style="background-color: transparent;">
+<MudDataGrid T="Food" @ref="dataGrid" Items="@Foods" ReadOnly="@IsAdmin" EditMode="DataGridEditMode.Form" Style="background-color:rgba(242, 191, 174, 0.4);"
+             CommittedItemChanges="@ItemHasBeenCommitted" GroupExpanded="true" Filterable="false" SortMode="@SortMode.None" Groupable="true"
+             Virtualize="true" Height="40vh" EditTrigger="DataGridEditTrigger.Manual" GroupClassFunc="GroupClassFunc">
     <ToolBarContent>
-        <MudText Typo="Typo.h6" Style="justify-content:center">Jedzenie</MudText>
+        <MudText Typo="Typo.h6">Jedzenie</MudText>
         <MudSpacer />
     </ToolBarContent>
-    <ColGroup>
-        <col style="width:100px;" />
-    </ColGroup>
-    <RowTemplate>
-        <MudTd Style="justify-content:center;text-align:center;background-color:rgba(246, 174, 150, 0.6);">@context.Type</MudTd>
-        </RowTemplate>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Hidden="@IsAdmin" />
+        <PropertyColumn Property="x => x.Type" Hidden="@IsAdmin" />
+        <PropertyColumn Property="x => x.Name"
+                        Title="" Grouping="true"
+                        CellStyle="justify-content:center;text-align: center !important;"
+                        GroupBy="x => x.Type" />
+        <TemplateColumn Hidden="@IsAdmin" CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="@(() => DeleteFood(context.Item.Id))" />
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
 
-        <ChildRowContent>
-            <MudTr>
-                    <MudCard Elevation="0">
-                    <MudCardContent Class="pa-0">
-                        <MudTable Items="@context.Names" Context="FoodContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
-                            <ColGroup>
-                                <col />
-                            </ColGroup>
-                            <RowTemplate>
-                                <MudTd Style="justify-content:center;text-align:center;background-color: rgba(242, 191, 174, 0.4)">@FoodContext.ToString()</MudTd>
-                                </RowTemplate>
-                            </MudTable>
-                        </MudCardContent>
-                    </MudCard>
-            </MudTr>
-            <MudTh />
-        </ChildRowContent>
+    </Columns>
+</MudDataGrid>
 
-    </MudTable>
+<style>
+    .test {
+        background-color: rgba(246, 174, 150, 0.6) !important;
+        justify-content: center !important;
+        text-align: center;
+    }
+</style>
+@code {
 
-    @code {
+    [Parameter]
+    public bool IsAdmin { get; set; }
 
-    public static IEnumerable<FoodTable> Foods { get; set; }
+    private MudDataGrid<Food> dataGrid;
+
+    public static IEnumerable<Food> Foods { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        List<FoodTable> tmpFoods = new List<FoodTable>();
-        int i = 0;
-        var xdd = FoodRepository.GetFoods().Result.ToList().GroupBy(food => food.Type).ToList();
-        foreach(var type in xdd)
-        {
-            List<string> namesList = new List<string>();
-            foreach(var name in type)
-            {
-                namesList.Add(name.Name);
-            }
-            tmpFoods.Add(new FoodTable { Type = type.Key, Names = namesList });
-        }
-        Foods = tmpFoods;
+        this.IsAdmin = !this.IsAdmin;
+        dataGrid?.ExpandAllGroups();
+        Foods = FoodRepository.GetFoods().Result.ToList();
+    }
 
+    Func<Food, object> _groupBy = x =>
+    {
+        return x.Type;
+    };
+
+    private string GroupClassFunc(GroupDefinition<Food> item)
+    {
+        return "test";
+    }
+
+    private void ItemHasBeenCommitted(object element)
+    {
+        FoodRepository.EditFood((Food)element);
+        Foods = FoodRepository.GetFoods().Result.ToList();
+        StateHasChanged();
+    }
+
+    private void DeleteFood(int id)
+    {
+        FoodRepository.DeleteFood(id);
+        Foods = FoodRepository.GetFoods().Result.ToList();
+        StateHasChanged();
     }
 }

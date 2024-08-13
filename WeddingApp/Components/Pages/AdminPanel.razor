@@ -8,6 +8,19 @@
 @page "/admin"
 @rendermode @(new InteractiveServerRenderMode(false))
 
+<MudAppBar Style="background-image: radial-gradient(circle, rgba(255, 213, 211, 1) 0%, rgba(255, 177, 151, 1) 29%, rgba(252, 166, 141, 0.8) 58%, rgba(255, 220, 211, 1) 100%); background-color:transparent"
+           Class="deeporange lighten-4">
+    <MudButton HtmlTag="label"
+               Variant="Variant.Filled"
+               Class="deeporange accent-3 mud-elevation-25 rounded"
+               Style="color: rgba(85,65,50,0.9)"
+               EndIcon="@Icons.Material.Filled.Logout"
+               @onclick="SignOut">
+        Wyloguj się !!
+    </MudButton>
+</MudAppBar>
+
+
 <MudContainer MaxWidth="MaxWidth.Large" Style="object-fit: contain;">
 
     @if (CustomAuthState.CurrentUserEntity.UserName == null)
@@ -31,28 +44,21 @@
         }
         else
         {
-            <MudStack Wrap="Wrap.Wrap"
-                      Class="loginClass align-content-center"
-                      Spacing="12"
-                      Justify="Justify.Center"
-                      AlignItems="AlignItems.Center"
-                      Style="padding-top: 10%;">
-                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                    <UserTable />
-                </MudPaper>
-                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                    <FoodPage />
-                </MudPaper>
-                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                    <FoodList />
-                </MudPaper>
-                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                    <Planner />
-                </MudPaper>
-                <MudPaper Style="background-color: rgba(255,193,173,0.4)">
-                    <PlannerList IsAdmin="true" />
-                </MudPaper>
-            </MudStack>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                <UserTable />
+            </MudPaper>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                <FoodPage />
+            </MudPaper>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                <FoodList IsAdmin="true" />
+            </MudPaper>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                <Planner />
+            </MudPaper>
+            <MudPaper Style="background-color: rgba(255,193,173,0.4)">
+                <PlannerList IsAdmin="true" />
+            </MudPaper>
         }
     }
 </MudContainer>
