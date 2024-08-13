@@ -31,6 +31,7 @@ builder.Services.AddDbContext<WeddingAppUserContext>(options => {
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<PictureRepository>();
 builder.Services.AddScoped<PlannerRepository>();
+builder.Services.AddScoped<FoodRepository>();
 builder.Services.AddSingleton<CustomAuthState>();
 builder.Services.AddScoped<FilesController>();
 builder.Services.AddSingleton<User>();

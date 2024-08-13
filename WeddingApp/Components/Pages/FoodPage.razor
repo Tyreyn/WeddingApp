@@ -1,0 +1,33 @@
+﻿@using WeddingAppBL.Repository
+@using WeddingAppDTO.DataTransferObject
+@inject FoodRepository FoodRepository
+<h3>Food</h3>
+
+<EditForm Model="@foodForm" OnValidSubmit="OnValidSubmit" style="width:100vw">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField AutoGrow Label="Typ jedzenia" HelperText="chuj, dupa, cycki" @bind-Value="foodForm.Type" For="@(() => foodForm.Type)" />
+                     <MudTextField AutoGrow Label="Nazwa jedzenia" HelperText="chuj, dupa, cycki" @bind-Value="foodForm.Name" For="@(() => foodForm.Name)" />
+                 </MudCardContent>
+                 <MudCardActions>
+                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+                 </MudCardActions>
+             </MudCard>
+         </MudItem>
+     </MudGrid>
+ </EditForm>
+
+ @code {
+
+    public Food foodForm = new Food { Name = null, Type = null };
+
+    private void OnValidSubmit(EditContext context)
+    {
+        FoodRepository.AddNewFood(foodForm.Name, foodForm.Type);
+        foodForm = new Food { Name = null, Type = null };
+        StateHasChanged();
+    }
+}

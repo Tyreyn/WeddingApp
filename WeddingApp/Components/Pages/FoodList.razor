@@ -1,0 +1,59 @@
+﻿@using WeddingApp.Data.Entities
+@using WeddingAppBL.Repository
+@using WeddingAppDTO.DataTransferObject
+@inject FoodRepository FoodRepository
+
+<MudTable Items="@Foods" Hover="true" Breakpoint="Breakpoint.Sm" HorizontalScrollbar="true" Height="40vh" Style="background-color: transparent;">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6" Style="justify-content:center">Jedzenie</MudText>
+        <MudSpacer />
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:100px;" />
+    </ColGroup>
+    <RowTemplate>
+        <MudTd Style="justify-content:center;text-align:center;background-color:rgba(246, 174, 150, 0.6);">@context.Type</MudTd>
+        </RowTemplate>
+
+        <ChildRowContent>
+            <MudTr>
+                    <MudCard Elevation="0">
+                    <MudCardContent Class="pa-0">
+                        <MudTable Items="@context.Names" Context="FoodContext" Hover="true" Breakpoint="Breakpoint.Sm" Elevation="0">
+                            <ColGroup>
+                                <col />
+                            </ColGroup>
+                            <RowTemplate>
+                                <MudTd Style="justify-content:center;text-align:center;background-color: rgba(242, 191, 174, 0.4)">@FoodContext.ToString()</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        </MudCardContent>
+                    </MudCard>
+            </MudTr>
+            <MudTh />
+        </ChildRowContent>
+
+    </MudTable>
+
+    @code {
+
+    public static IEnumerable<FoodTable> Foods { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        List<FoodTable> tmpFoods = new List<FoodTable>();
+        int i = 0;
+        var xdd = FoodRepository.GetFoods().Result.ToList().GroupBy(food => food.Type).ToList();
+        foreach(var type in xdd)
+        {
+            List<string> namesList = new List<string>();
+            foreach(var name in type)
+            {
+                namesList.Add(name.Name);
+            }
+            tmpFoods.Add(new FoodTable { Type = type.Key, Names = namesList });
+        }
+        Foods = tmpFoods;
+
+    }
+}

@@ -3,20 +3,16 @@
 @inject PlannerRepository PlannerRepository
 @rendermode @(new InteractiveServerRenderMode(true))
 
-<MudTable @ref="_table" Items="@Comments" CanCancelEdit="true" ReadOnly="@IsAdmin" style="width:100vw"
+<MudTable @ref="_table" Items="@Comments" CanCancelEdit="true" ReadOnly="@IsAdmin" Style="background-color: transparent;"
           @bind-SelectedItem="selectedItem1" CommitEditTooltip="Commit Edit" HorizontalScrollbar="true"
-          RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues" Height="350px" Breakpoint="Breakpoint.Sm" FixedHeader="true"
+          RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues" Height="40vh" Breakpoint="Breakpoint.Sm" FixedHeader="true"
           RowEditCommit="ItemHasBeenCommitted" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Plan Wesela</MudText>
         <MudSpacer />
     </ToolBarContent>
     <ColGroup>
-        <col style="width: 10px;" />
-        <col/>
-        <col/>
-        <col />
-        <col />
+        <col style="width: 90vw;" />
         @if (applyButtonPosition.DisplayApplyButtonAtEnd() || (editButtonPosition.DisplayEditButtonAtEnd() && editTrigger == TableEditTrigger.EditButton))
         {
             <col style="width:50px;" />
@@ -24,19 +20,21 @@
     </ColGroup>
 
     <RowTemplate>
-        <MudTd DataLabel="Godzina">@context.DateTime.Hours:@(context.DateTime.Minutes == 0 ? "00" : @context.DateTime.Minutes)</MudTd>
-            <MudTd Style="overflow-wrap:anywhere">@context.Comment</MudTd>
+        <div>
+            <MudTh DataLabel="Godzina" Style="justify-content:center;background-color: rgba(246, 174, 150, 0.6);width:90vw">@context.DateTime.Hours:@(context.DateTime.Minutes == 0 ? "00" : @context.DateTime.Minutes)</MudTh>
+            <MudTh Style="justify-content:center;overflow-wrap:anywhere;background-color:rgba(242, 191, 174, 0.4);width:90vw">@context.Comment</MudTh>
+            </div>
         </RowTemplate>
 
         <RowEditingTemplate>
             <MudTd DataLabel="Godzina">
-                <MudTextField @bind-Value="context.DateTime" InputType="InputType.DateTimeLocal" Required />
+                <MudTextField @bind-Value="context.DateTime" InputType="InputType.Time" Required />
          </MudTd>
          <MudTd DataLabel="Opis">
              <MudTextField AutoGrow Style="overflow-wrap:anywhere" @bind-Value="context.Comment" Required />
          </MudTd>
          <MudTd DataLabel="">
-             <MudIconButton OnClick="@((e) => DeleteUser(@context.Id))" Icon="@Icons.Material.Filled.Delete"/>
+             <MudIconButton OnClick="@((e) => DeleteUser(@context.Id))" Icon="@Icons.Material.Filled.Delete" />
          </MudTd>
      </RowEditingTemplate>
 
@@ -47,7 +45,7 @@
  </MudTable>
 
  <style>
-</style>
+ </style>
 
  @code {
 
@@ -59,7 +57,7 @@
     private TableEditTrigger editTrigger = TableEditTrigger.EditButton;
     private PlannerComment elementBeforeEdit;
     private PlannerComment selectedItem1 = null;
-    private TimeSpan? time = new TimeSpan(11,11,2024,00, 00, 00);
+    private TimeSpan? time = new TimeSpan(11, 11, 2024, 00, 00, 00);
     private IEnumerable<PlannerComment> Comments = new List<PlannerComment>();
 
     private void BackupItem(object element)
