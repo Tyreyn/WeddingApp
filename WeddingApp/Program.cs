@@ -23,7 +23,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddDbContext<WeddingAppUserContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MySQL"));
+    options.UseMySQL(builder.Configuration.GetConnectionString("MySQL"));
     options.EnableSensitiveDataLogging();
     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
