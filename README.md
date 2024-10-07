@@ -35,14 +35,14 @@ Add-Migration <migration_name>
 Update-Database
 ```
 5. To add new user just login
-![Alt text](https://github.com/Tyreyn/WeddingApp/login.png "This is login image")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/login.png "This is login image")
 
 ## User Panel
-![Alt text](https://github.com/Tyreyn/WeddingApp/gallery.png "This is gallery panel")
-![Alt text](https://github.com/Tyreyn/WeddingApp/galleryfilled.png "This is filled gallery panel")
-![Alt text](https://github.com/Tyreyn/WeddingApp/weddingplan.png "This is gallery panel")
-![Alt text](https://github.com/Tyreyn/WeddingApp/weddingplanfilled.png "This is filled gallery panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/gallery.png "This is gallery panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/galleryfilled.png "This is filled gallery panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/weddingplan.png "This is wedding plan panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/weddingplanfilled.png "This is filled wedding plan panel")
 
 ## Admin Panel only for user=admin phone=admin
-![Alt text](https://github.com/Tyreyn/WeddingApp/admin1.png "This is admin panel")
-![Alt text](https://github.com/Tyreyn/WeddingApp/admin2.png "This is admin panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/admin1.png "This is admin panel")
+![Alt text](https://github.com/Tyreyn/WeddingApp/blob/main/admin2.png "This is admin panel")
